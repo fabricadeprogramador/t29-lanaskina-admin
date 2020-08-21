@@ -1,32 +1,62 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
-  </div>
+  <!-- Tag raiz do projeto -->
+  <v-app id="inspire">
+    <!-- Barra de navegação -->
+    <v-navigation-drawer v-model="drawer" app>
+      <!-- Lista de rotas -->
+      <v-list dense>
+        <v-list-item v-for="(rota, index) in rotas" :key="index" link>
+          <v-list-item-action>
+            <v-icon>{{ rota.icone }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ rota.titulo }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <!-- Barra superior -->
+    <v-app-bar app color="brown lighten-1" dark>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title>{{ titulo }}</v-toolbar-title>
+    </v-app-bar>
+
+    <!-- Área principal de conteúdo -->
+    <v-main>
+      <router-view></router-view>
+    </v-main>
+
+    <!-- Rodapé -->
+    <v-footer color="brown lighten-1" app>
+      <span class="white--text"
+        >&copy; {{ rodape }} {{ new Date().getFullYear() }}</span
+      >
+    </v-footer>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<script>
+export default {
+  props: {
+    source: String,
+  },
+  data: () => ({
+    drawer: null,
+    titulo: "Lanaskina Admin",
+    rodape: "Fábrica de Programador - High Tech Cursos -",
+    rotas: [
+      {
+        icone: "mdi-home",
+        titulo: "Home",
+        rota: "",
+      },
+      {
+        icone: "mdi-account",
+        titulo: "Usuários",
+        rota: "",
+      },
+    ],
+  }),
+};
+</script>
