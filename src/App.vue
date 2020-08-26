@@ -5,7 +5,12 @@
     <v-navigation-drawer v-model="drawer" app>
       <!-- Lista de rotas -->
       <v-list dense>
-        <v-list-item v-for="(rota, index) in rotas" :key="index" link>
+        <v-list-item
+          v-for="(rota, index) in rotas"
+          :key="index"
+          :to="rota.rota"
+          link
+        >
           <v-list-item-action>
             <v-icon>{{ rota.icone }}</v-icon>
           </v-list-item-action>
@@ -49,12 +54,32 @@ export default {
       {
         icone: "mdi-home",
         titulo: "Home",
-        rota: "",
+        rota: "/",
       },
       {
         icone: "mdi-account",
         titulo: "Usuários",
-        rota: "",
+        rota: "/usuarios",
+      },
+      {
+        icone: "mdi-domain",
+        titulo: "Empresas",
+        rota: "/empresas",
+      },
+      {
+        icone: "mdi-account-group",
+        titulo: "Clientes",
+        rota: "/clientes",
+      },
+      {
+        icone: "mdi-cash-register",
+        titulo: "Transações",
+        rota: "/transacoes",
+      },
+      {
+        icone: "mdi-finance",
+        titulo: "Relatórios",
+        rota: "/relatorios",
       },
     ],
   }),
