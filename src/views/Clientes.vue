@@ -28,7 +28,7 @@
         <v-icon small @click="ativarInativar(item)" v-if="item.ativo" color="green">mdi-check-bold</v-icon>
         <v-icon small @click="ativarInativar(item)" v-else color="red">mdi-cancel</v-icon>
         <v-row justify="center">
-          <v-dialog v-model="isDialogOpen" width="600px" persistent>
+          <v-dialog v-model="isDialogOpen" width="600px" persistent :retain-focus="false">
             <v-card>
               <v-card-title class="headline">Informações do Cliente</v-card-title>
               <v-card-text elevation="5">
@@ -157,7 +157,7 @@
               <v-card-actions>
                 <v-btn color="green darken-1" text @click="testeEdit">Editar</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="red" text @click="isDialogOpen = false">Fechar</v-btn>
+                <v-btn color="red" text @click="fecharDIalog">Fechar</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -267,21 +267,42 @@ export default {
     },
 
     abrirDIalog(cliente) {
-      this.clienteCorrente = Object.assign({}, cliente);
+      console.log(cliente);
+      this.clienteCorrente = Object.assign({}, cliente)
       this.isDialogOpen = true;
+    },
+    fecharDIalog() {      
+      this.isDialogOpen = false;
+      this.isDisable = true;
+      this.clienteCorrente= {
+      id: "",
+      nome: "",
+      endereco: {
+        rua: "",
+        numero: "",
+        bairro: "",
+      },
+      dataNacimento: "",
+      cpf: "",
+      telefone: "",
+      sexo: "",
+      email: "",
+      ativo: null,
+    }
     },
     testeEdit() {
       this.isDisable = false;
     },
     ativarInativar(cliente){
      let achou = false;
-     let contador = 0
-     while(contador <=this.clientes.length && achou == false){
-       if(this.clientes[contador].id == cliente.id){
-         this.clientes[contador].ativo = !this.clientes[contador].ativo
+     let i = 0
+     while(i <this.clientes.length && achou == false){
+       console.log(this.clientes.length)
+       if(this.clientes[i].id == cliente.id){
+         this.clientes[i].ativo = !this.clientes[i].ativo
          achou= true;
        }
-       contador++
+       i++
      }
     }
   },
