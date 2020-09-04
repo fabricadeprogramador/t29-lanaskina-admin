@@ -28,7 +28,7 @@
         <v-icon small @click="ativarInativar(item)" v-if="item.ativo" color="green">mdi-check-bold</v-icon>
         <v-icon small @click="ativarInativar(item)" v-else color="red">mdi-cancel</v-icon>
         <v-row justify="center">
-          <v-dialog v-model="isDialogOpen" width="600px" persistent :retain-focus="false">
+          <v-dialog v-model="isDialogOpen" width="600px" persistent >
             <v-card>
               <v-card-title class="headline">Informações do Cliente</v-card-title>
               <v-card-text elevation="5">
@@ -154,9 +154,7 @@
                 </v-row>
               </v-card-text>
 
-              <v-card-actions>
-                <v-btn color="green darken-1" text @click="testeEdit">Editar</v-btn>
-                <v-spacer></v-spacer>
+              <v-card-actions>  
                 <v-btn color="red" text @click="fecharDIalog">Fechar</v-btn>
               </v-card-actions>
             </v-card>
@@ -290,9 +288,9 @@ export default {
       ativo: null,
     }
     },
-    testeEdit() {
-      this.isDisable = false;
-    },
+    // testeEdit() {
+    //   this.isDisable = false;
+    // },
     ativarInativar(cliente){
      let achou = false;
      let i = 0
