@@ -13,8 +13,13 @@
         </v-toolbar-title>
       </v-toolbar>
     </template>
+
+     <template v-slot:item.acoes>
+       <v-icon small class="mr-2" color="primary" @click="">mdi-file-find</v-icon>
+       <v-icon small color="green" @click="">mdi-check-bold</v-icon>
+    </template>
+
     <template v-slot:footer>
-      
       <v-toolbar flat color="white">
        <v-spacer></v-spacer>
         <v-toolbar-title>
