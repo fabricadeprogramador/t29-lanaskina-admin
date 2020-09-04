@@ -163,13 +163,7 @@
               </v-card-text>
 
               <v-card-actions>
-                <v-btn color="green darken-1" text @click="testeEdit"
-                  >Editar</v-btn
-                >
-                <v-spacer></v-spacer>
-                <v-btn color="red" text @click="isDialogOpen = false"
-                  >Fechar</v-btn
-                >
+                <v-btn color="red" text @click="fecharDIalog">Fechar</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -279,21 +273,42 @@ export default {
     },
 
     abrirDIalog(cliente) {
+      console.log(cliente);
       this.clienteCorrente = Object.assign({}, cliente);
       this.isDialogOpen = true;
     },
-    testeEdit() {
-      this.isDisable = false;
+    fecharDIalog() {
+      this.isDialogOpen = false;
+      this.isDisable = true;
+      this.clienteCorrente = {
+        id: "",
+        nome: "",
+        endereco: {
+          rua: "",
+          numero: "",
+          bairro: "",
+        },
+        dataNacimento: "",
+        cpf: "",
+        telefone: "",
+        sexo: "",
+        email: "",
+        ativo: null,
+      };
     },
+    // testeEdit() {
+    //   this.isDisable = false;
+    // },
     ativarInativar(cliente) {
       let achou = false;
-      let contador = 0;
-      while (contador <= this.clientes.length && achou == false) {
-        if (this.clientes[contador].id == cliente.id) {
-          this.clientes[contador].ativo = !this.clientes[contador].ativo;
+      let i = 0;
+      while (i < this.clientes.length && achou == false) {
+        console.log(this.clientes.length);
+        if (this.clientes[i].id == cliente.id) {
+          this.clientes[i].ativo = !this.clientes[i].ativo;
           achou = true;
         }
-        contador++;
+        i++;
       }
     },
   },
