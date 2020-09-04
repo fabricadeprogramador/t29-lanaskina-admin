@@ -24,13 +24,25 @@
       </template>
 
       <template v-slot:item.acoes="{ item }">
-        <v-icon small class="mr-2" @click="abrirDIalog(item)" color="primary">mdi-file-find</v-icon>
-        <v-icon small @click="ativarInativar(item)" v-if="item.ativo" color="green">mdi-check-bold</v-icon>
-        <v-icon small @click="ativarInativar(item)" v-else color="red">mdi-cancel</v-icon>
+        <v-icon small class="mr-2" @click="abrirDIalog(item)" color="primary"
+          >mdi-file-find</v-icon
+        >
+        <v-icon
+          small
+          @click="ativarInativar(item)"
+          v-if="item.ativo"
+          color="green"
+          >mdi-check-bold</v-icon
+        >
+        <v-icon small @click="ativarInativar(item)" v-else color="red"
+          >mdi-cancel</v-icon
+        >
         <v-row justify="center">
           <v-dialog v-model="isDialogOpen" width="600px" persistent>
             <v-card>
-              <v-card-title class="headline">Informações do Cliente</v-card-title>
+              <v-card-title class="headline"
+                >Informações do Cliente</v-card-title
+              >
               <v-card-text elevation="5">
                 <!-- <v-row >
                   <v-col cols="12" sm="2"  >
@@ -44,7 +56,7 @@
                 <v-row>
                   <v-col cols="12" sm="12">
                     <v-card elevation="3" class="pa-3">
-                      <v-row>
+                      <v-row style="height: 60px;">
                         <v-col cols="12" sm="2">
                           <v-text-field
                             :value="clienteCorrente.id"
@@ -74,7 +86,7 @@
                         </v-col>
                       </v-row>
 
-                      <v-row>
+                      <v-row style="height: 60px;">
                         <v-col cols="12" sm="6">
                           <v-text-field
                             :value="clienteCorrente.dataNacimento"
@@ -94,7 +106,7 @@
                           ></v-text-field>
                         </v-col>
                       </v-row>
-                      <v-row>
+                      <v-row style="height: 60px;">
                         <v-col cols="12" sm="6">
                           <v-text-field
                             :value="clienteCorrente.telefone"
@@ -114,7 +126,7 @@
                           ></v-text-field>
                         </v-col>
                       </v-row>
-                      <v-row>
+                      <v-row style="height: 60px;">
                         <v-col cols="12">
                           <v-text-field
                             :value="clienteCorrente.endereco.rua"
@@ -125,7 +137,7 @@
                           ></v-text-field>
                         </v-col>
                       </v-row>
-                      <v-row>
+                      <v-row style="height: 60px;">
                         <v-col cols="12" sm="10">
                           <v-text-field
                             :value="clienteCorrente.endereco.bairro"
@@ -148,16 +160,16 @@
                     </v-card>
                   </v-col>
                 </v-row>
-
-                <v-row>
-                  <v-col cols="12" sm="10"></v-col>
-                </v-row>
               </v-card-text>
 
               <v-card-actions>
-                <v-btn color="green darken-1" text @click="testeEdit">Editar</v-btn>
+                <v-btn color="green darken-1" text @click="testeEdit"
+                  >Editar</v-btn
+                >
                 <v-spacer></v-spacer>
-                <v-btn color="red" text @click="isDialogOpen = false">Fechar</v-btn>
+                <v-btn color="red" text @click="isDialogOpen = false"
+                  >Fechar</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -273,17 +285,17 @@ export default {
     testeEdit() {
       this.isDisable = false;
     },
-    ativarInativar(cliente){
-     let achou = false;
-     let contador = 0
-     while(contador <=this.clientes.length && achou == false){
-       if(this.clientes[contador].id == cliente.id){
-         this.clientes[contador].ativo = !this.clientes[contador].ativo
-         achou= true;
-       }
-       contador++
-     }
-    }
+    ativarInativar(cliente) {
+      let achou = false;
+      let contador = 0;
+      while (contador <= this.clientes.length && achou == false) {
+        if (this.clientes[contador].id == cliente.id) {
+          this.clientes[contador].ativo = !this.clientes[contador].ativo;
+          achou = true;
+        }
+        contador++;
+      }
+    },
   },
 };
 </script>
