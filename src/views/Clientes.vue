@@ -22,27 +22,15 @@
           ></v-text-field>
         </v-toolbar>
       </template>
-
+<!-- Início abertura/fechamento Dialog e ativar/inativar clientes -->
       <template v-slot:item.acoes="{ item }">
-        <v-icon small class="mr-2" @click="abrirDIalog(item)" color="primary"
-          >mdi-file-find</v-icon
-        >
-        <v-icon
-          small
-          @click="ativarInativar(item)"
-          v-if="item.ativo"
-          color="green"
-          >mdi-check-bold</v-icon
-        >
-        <v-icon small @click="ativarInativar(item)" v-else color="red"
-          >mdi-cancel</v-icon
-        >
+        <v-icon small class="mr-2" @click="abrirDIalog(item)" color="primary">mdi-file-find</v-icon>
+        <v-icon small @click="ativarInativar(item)" v-if="item.ativo" color="green">mdi-check-bold</v-icon>
+        <v-icon small @click="ativarInativar(item)" v-else color="red">mdi-cancel</v-icon>
         <v-row justify="center">
           <v-dialog v-model="isDialogOpen" width="600px" persistent>
             <v-card>
-              <v-card-title class="headline"
-                >Informações do Cliente</v-card-title
-              >
+              <v-card-title class="headline">Informações do Cliente</v-card-title>
               <v-card-text elevation="5">
                 <!-- <v-row >
                   <v-col cols="12" sm="2"  >
@@ -169,7 +157,7 @@
           </v-dialog>
         </v-row>
       </template>
-
+<!-- Fim abertura/fechamento Dialog e ativar/inativar clientes -->
       <template v-slot:no-data>
         <v-subheader>Nenhum cliente cadastro.</v-subheader>
       </template>
