@@ -13,16 +13,12 @@
       </template>
       <!-- Início abertura/fechamento Dialog e ativar/inativar clientes -->
       <template v-slot:item.acoes="{ item }">
-        <v-icon small class="mr-2" color="primary" @click="abrirDialog(item)"
-          >mdi-file-find</v-icon
-        >
-        <v-icon small color="green" @click="">mdi-check-bold</v-icon>
+        <v-icon small class="mr-2" color="primary" @click="abrirDialog(item)">mdi-file-find</v-icon>
+        <v-icon small color="green" @click>mdi-check-bold</v-icon>
         <v-row justify="center">
           <v-dialog v-model="isDialogOpen" width="600px">
             <v-card>
-              <v-card-title class="headline"
-                >Informações de Transação</v-card-title
-              >
+              <v-card-title class="headline">Informações de Transação</v-card-title>
               <v-card-text elevation="5">
                 <v-row>
                   <v-col cols="12" sm="12">
@@ -30,58 +26,17 @@
                       <v-row>
                         <v-col cols="12" sm="2">
                           <v-text-field
-                            v-model="transacaoCorrente.cliente.id"
-                            label="ID:"
+                            v-model="transacaoCorrente.idTransacoes"
+                            label="ID $$:"
                             outlined
                             :disabled="isDisable"
                             dense
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6">
+                        <v-col cols="12" sm="10">
                           <v-text-field
                             v-model="transacaoCorrente.cliente.nome"
                             label="NOME:"
-                            outlined
-                            :disabled="isDisable"
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <v-text-field
-                            v-model="transacaoCorrente.cliente.username"
-                            label="USERNAME:"
-                            outlined
-                            :disabled="isDisable"
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-
-                      <v-row>
-                        <v-col cols="12" sm="12">
-                          <v-text-field
-                            v-model="transacaoCorrente.empresa.endereco.rua"
-                            label="RUA/AV:"
-                            outlined
-                            :disabled="isDisable"
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="12" sm="2">
-                          <v-text-field
-                            v-model="transacaoCorrente.empresa.endereco.numero"
-                            label="nº:"
-                            outlined
-                            :disabled="isDisable"
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="8">
-                          <v-text-field
-                            v-model="transacaoCorrente.empresa.endereco.bairro"
-                            label="nº:"
                             outlined
                             :disabled="isDisable"
                             dense
@@ -110,16 +65,7 @@
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col cols="12" sm="2">
-                          <v-text-field
-                            v-model="transacaoCorrente.empresa.id"
-                            label="ID Empresa"
-                            outlined
-                            :disabled="isDisable"
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="8">
+                        <v-col cols="12" >
                           <v-text-field
                             v-model="transacaoCorrente.empresa.nome"
                             label="Nome Empresa"
@@ -129,6 +75,19 @@
                           ></v-text-field>
                         </v-col>
                       </v-row>
+                      <v-list>
+                        <v-subheader>
+                          Lista de produtos:
+                        </v-subheader>                        
+                        <v-list-item-content>
+                          <v-list-item-title v-for="(produto, index) in item.produtos" :key="index">
+                            {{produto.nome}}
+                          </v-list-item-title>
+                         
+
+                          <v-list-item-subtitle v-text="item.sub"></v-list-item-subtitle>
+                        </v-list-item-content>
+                      </v-list>
                     </v-card>
                   </v-col>
                 </v-row>
@@ -189,8 +148,9 @@ export default {
         //   bairro: "",
         // },
       },
+      idTransacoes: "",
       dataTransacoes: "",
-      valor: 0,
+      valor: "",
       empresa: {
         id: "",
         nome: "",
@@ -220,6 +180,7 @@ export default {
             role: "ADMIN",
             ativo: false,
           },
+          idTransacoes: 0,
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
@@ -247,6 +208,7 @@ export default {
             role: "ADMIN",
             ativo: false,
           },
+          idTransacoes: 1,
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
@@ -274,6 +236,7 @@ export default {
             role: "ADMIN",
             ativo: false,
           },
+          idTransacoes: 2,
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
@@ -301,6 +264,7 @@ export default {
             role: "ADMIN",
             ativo: false,
           },
+          idTransacoes: 3,
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
@@ -328,6 +292,7 @@ export default {
             role: "ADMIN",
             ativo: false,
           },
+          idTransacoes: 4,
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
@@ -352,7 +317,6 @@ export default {
     abrirDialog(transacoes) {
       console.log(transacoes);
       this.transacaoCorrente = Object.assign({}, transacoes);
-      this.transacaoCorrente.valor = transacoes.valor.toFixed(2);
       this.isDialogOpen = true;
     },
     fecharDialog() {
@@ -367,6 +331,7 @@ export default {
           numero: "",
           bairro: "",
         },
+        idTransacoes: "",
         dataTransacoes: "",
         valor: "",
         empresa: {
