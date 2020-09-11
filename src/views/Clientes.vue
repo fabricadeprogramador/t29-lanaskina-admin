@@ -24,7 +24,7 @@
           ></v-text-field>
         </v-toolbar>
       </template>
-
+<!-- Início abertura/fechamento Dialog e ativar/inativar clientes -->
       <template v-slot:item.acoes="{ item }">
         <v-icon small class="mr-2" @click="abrirDIalog(item)" color="primary">mdi-file-find</v-icon>
         <v-icon small @click="ativarInativar(item)" v-if="item.ativo" color="green">mdi-check-bold</v-icon>
@@ -163,9 +163,7 @@
         <!-- fim CARD DO DIALOG  -->
 
       </template>
-
-
-
+<!-- Fim abertura/fechamento Dialog e ativar/inativar clientes -->
       <template v-slot:no-data>
         <v-subheader>Nenhum cliente cadastro.</v-subheader>
       </template>
