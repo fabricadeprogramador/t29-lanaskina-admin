@@ -82,12 +82,15 @@
         </v-container>
       </v-form>
     </v-card>
+    <!-- Formulário de Cadastro -->
+
+
 
     <!-- Listagem de usuários cadastrados -->
     <v-data-table
       :headers="cabecalho"
       :items="usuarios"
-      sort-by="calories"
+      sort-by="nome"
       class="elevation-1"
     >
       <template v-slot:top>

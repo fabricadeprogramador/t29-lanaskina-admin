@@ -5,9 +5,11 @@
       :headers="cabecalhoCliente"
       :items="clientes"
       :search="search"
-      sort-by="calories"
+      sort-by="nome"
       class="elevation-1"
-    >
+      >
+
+
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>Clientes Cadastrados</v-toolbar-title>
@@ -27,6 +29,8 @@
         <v-icon small class="mr-2" @click="abrirDIalog(item)" color="primary">mdi-file-find</v-icon>
         <v-icon small @click="ativarInativar(item)" v-if="item.ativo" color="green">mdi-check-bold</v-icon>
         <v-icon small @click="ativarInativar(item)" v-else color="red">mdi-cancel</v-icon>
+
+        <!-- inicio CARD DO DIALOG  -->
         <v-row justify="center">
           <v-dialog v-model="isDialogOpen" width="600px" persistent>
             <v-card>
@@ -156,11 +160,15 @@
             </v-card>
           </v-dialog>
         </v-row>
+        <!-- fim CARD DO DIALOG  -->
+
       </template>
 <!-- Fim abertura/fechamento Dialog e ativar/inativar clientes -->
       <template v-slot:no-data>
         <v-subheader>Nenhum cliente cadastro.</v-subheader>
       </template>
+
+
     </v-data-table>
   </div>
 </template>
@@ -210,8 +218,10 @@ export default {
   },
 
   methods: {
+
     initialize() {
       this.clientes = [
+
         {
           id: 0,
           nome: "Jão da Silva",
@@ -227,6 +237,7 @@ export default {
           email: "testeEmail@teste.com",
           ativo: false,
         },
+
         {
           id: 1,
           nome: "Maria da Silva",
@@ -242,6 +253,7 @@ export default {
           email: "emailFulano@teste.com",
           ativo: true,
         },
+
         {
           id: 2,
           nome: "Fulano da Silva",
@@ -257,7 +269,11 @@ export default {
           email: "teste@teste.com",
           ativo: true,
         },
+
+
+
       ];
+
     },
 
     abrirDIalog(cliente) {
