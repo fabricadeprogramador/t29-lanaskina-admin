@@ -34,70 +34,104 @@
                   <v-col cols="12" sm="12">
                     <v-card elevation="3" class="pa-3">
                       <v-row>
-                        <v-col cols="12" sm="2">
-                          <v-text-field
-                            v-model="transacaoCorrente.idTransacoes"
-                            label="ID $$:"
-                            outlined
-                            :disabled="isDisable"
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="10">
-                          <v-text-field
-                            v-model="transacaoCorrente.cliente.nome"
-                            label="NOME:"
-                            outlined
-                            :disabled="isDisable"
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="12" sm="8">
-                          <v-text-field
-                            v-model="transacaoCorrente.dataTransacoes"
-                            label="Data Compra"
-                            outlined
-                            :disabled="isDisable"
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <v-text-field
-                            v-model="transacaoCorrente.valor"
-                            label="Valor Compra"
-                            prefix="R$"
-                            outlined
-                            :disabled="isDisable"
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="12" >
-                          <v-text-field
-                            v-model="transacaoCorrente.empresa.nome"
-                            label="Nome Empresa"
-                            outlined
-                            :disabled="isDisable"
-                            dense
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <v-list>
-                        <v-subheader>
-                          Lista de produtos:
-                        </v-subheader>                        
+                        <v-col cols="12" sm="12">
+                          <v-card class="px-5" flat>
+                            Cliente:
+                            <v-row style="height: 60px;">
+                              <v-col cols="12" sm="2">
+                                <v-text-field
+                                  v-model="transacaoCorrente.idTransacoes"
+                                  label="ID"
+                                  outlined
+                                  :disabled="isDisable"
+                                  dense
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="7">
+                                <v-text-field
+                                  v-model="transacaoCorrente.cliente.nome"
+                                  label="NOME:"
+                                  outlined
+                                  :disabled="isDisable"
+                                  dense
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm>
+                                <v-text-field
+                                  v-model="transacaoCorrente.cliente.ativo?'Ativo':'Inativo'"
+                                  label="STATUS:"
+                                  outlined
+                                  :disabled="isDisable"
+                                  dense
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            Empresa:
+                            <v-row >
+                              <v-col cols="12" sm="2">
+                                <v-text-field
+                                  v-model="transacaoCorrente.empresa.id"
+                                  label="ID"
+                                  outlined
+                                  :disabled="isDisable"
+                                  dense
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="7">
+                                <v-text-field
+                                  v-model="transacaoCorrente.empresa.nome"
+                                  label="Nome Empresa"
+                                  outlined
+                                  :disabled="isDisable"
+                                  dense
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="3">
+                                <v-text-field
+                                  v-model="transacaoCorrente.empresa.endereco.bairro"
+                                  label="Bairro"
+                                  outlined
+                                  :disabled="isDisable"
+                                  dense
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            Histórico:
+                            <v-row style="height: 60px;">
+                              <v-col cols="12" sm="8">
+                                <v-text-field
+                                  v-model="transacaoCorrente.dataTransacoes"
+                                  label="Data Compra"
+                                  outlined
+                                  :disabled="isDisable"
+                                  dense
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="4">
+                                <v-text-field
+                                  v-model="transacaoCorrente.valor.toFixed(2)"
+                                  label="Valor Compra"
+                                  prefix="R$"
+                                  outlined
+                                  :disabled="isDisable"
+                                  dense
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>                            
+                            <v-list>
+                        <v-list-item-title color="red">Lista de produtos:</v-list-item-title>
                         <v-list-item-content>
-                          <v-list-item-title v-for="(produto, index) in item.produtos" :key="index">
-                            {{produto.nome}}
-                          </v-list-item-title>
-                         
+                          <v-list-item-title
+                            v-for="(produto, index) in transacaoCorrente.produtos"
+                            :key="index"
+                          ><v-chip outlined text-color="blue">{{index+1}}-Produto: <v-chip label color="white">{{produto.nome}}</v-chip>  - Sub-Total:<v-chip label color="white">R$ {{produto.valor.toFixed(2)}}</v-chip>  </v-chip></v-list-item-title>
 
                           <v-list-item-subtitle v-text="item.sub"></v-list-item-subtitle>
                         </v-list-item-content>
                       </v-list>
+                          </v-card>
+                        </v-col>
+                      </v-row>                      
                     </v-card>
                   </v-col>
                 </v-row>
@@ -159,7 +193,7 @@ export default {
       },
       idTransacoes: "",
       dataTransacoes: "",
-      valor: "",
+      valor: 0,
       empresa: {
         id: "",
         nome: "",
@@ -185,15 +219,15 @@ export default {
           ativo: true,
           cliente: {
             id: 0,
-            nome: "Jão da Silva",
+            nome: "Carlos Francisco Chaves",
             username: "jao01",
             senha: "123",
             role: "ADMIN",
-            ativo: true,
+            ativo: false,
           },
           idTransacoes: 0,
           dataTransacoes: "11/01/2020",
-          valor: 100.0324,
+          valor: 48.50,
           empresa: {
             id: 0,
             nome: "Petisco de Gato",
@@ -205,7 +239,19 @@ export default {
           },
           produtos: [
             {
-              nome: "Espetinho Completo",
+              id:0,
+              nome: "Espetinho Simples",
+              valor: 8.00
+            },
+            {
+              id:1,
+              nome: "Espetinho com mandioca",
+              valor: 10.50
+            },
+            {
+              id:1,
+              nome: "Espetinho com Completo",
+              valor: 30.00
             },
           ],
           status: "Concluido",
@@ -236,7 +282,14 @@ export default {
           },
           produtos: [
             {
+              id:0,
               nome: "Espetinho Completo",
+              valor: 50.0324
+            },
+            {
+              id:1,
+              nome: "Espetinho com mandioca",
+              valor: 50.30
             },
           ],
           status: "Aberto",
@@ -255,7 +308,7 @@ export default {
           },
           idTransacoes: 2,
           dataTransacoes: "11/01/2020",
-          valor: 100.9536,
+          valor: 22.50,
           empresa: {
             id: 0,
             nome: "Petisco de Gato",
@@ -267,7 +320,14 @@ export default {
           },
           produtos: [
             {
-              nome: "Espetinho Completo",
+              id:0,
+              nome: "Espetinho simples",
+              valor: 12.00
+            },
+            {
+              id:1,
+              nome: "Espetinho com mandioca",
+              valor: 10.50
             },
           ],
           status: "Cancelado",
@@ -278,7 +338,7 @@ export default {
           ativo: true,
           cliente: {
             id: 3,
-            nome: "Jão da Silva",
+            nome: "Jão Pedro Souza",
             username: "jao01",
             senha: "123",
             role: "ADMIN",
@@ -297,7 +357,14 @@ export default {
           },
           produtos: [
             {
+              id:0,
               nome: "Espetinho Completo",
+              valor: 60.00
+            },
+            {
+              id:1,
+              nome: "Espetinho com mandioca",
+              valor: 40.00
             },
           ],
           status: "Concluido",
@@ -305,7 +372,7 @@ export default {
         {
           cliente: {
             id: 4,
-            nome: "Jão da Silva",
+            nome: "Amarildo Duarte",
             username: "jao01",
             senha: "123",
             role: "ADMIN",
@@ -313,7 +380,7 @@ export default {
           },
           idTransacoes: 3,
           dataTransacoes: "11/01/2020",
-          valor: 100,
+          valor: 48.50,
           empresa: {
             id: 0,
             nome: "Petisco de Gato",
@@ -325,8 +392,10 @@ export default {
           },
           produtos: [
             {
+              id:0,
               nome: "Espetinho Completo",
-            },
+              valor: 48.50              
+            },          
           ],
           status: "Concluido",
         },
@@ -336,7 +405,7 @@ export default {
           ativo: false,
           cliente: {
             id: 4,
-            nome: "Jão da Silva",
+            nome: "Silvana da Costa",
             username: "jao01",
             senha: "123",
             role: "ADMIN",
@@ -356,7 +425,14 @@ export default {
           },
           produtos: [
             {
+              id:0,
               nome: "Espetinho Completo",
+              valor: 75.50
+            },
+            {
+              id:1,
+              nome: "Espetinho com mandioca",
+              valor: 24.50
             },
           ],
           status: "Aberto",
@@ -378,11 +454,9 @@ export default {
 
       let soma = 0;
       for (let i = 0; i < this.transacoes.length; i++) {
-        
-        if(this.transacoes[i].status != "Cancelado"){
+        if (this.transacoes[i].status != "Cancelado") {
           soma += this.transacoes[i].valor;
         }
-
       }
 
       return soma;
