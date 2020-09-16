@@ -19,9 +19,9 @@
       </template>
 
       <template v-slot:item.status="{ item }">
-        <v-chip v-if="item.status =='Concluido' " color="green">{{item.status}}</v-chip>
+        <v-chip v-if="item.status =='Concluido' " color="green" text-color="white">{{item.status}}</v-chip>
         <v-chip v-else-if="item.status =='Aberto' " color="blue" text-color="white">{{item.status}}</v-chip>
-        <v-chip v-else color="red" >{{item.status}}</v-chip>
+        <v-chip v-else color="red" text-color="white" >{{item.status}}</v-chip>
       </template>
       <!-- Início abertura/fechamento Dialog e ativar/inativar clientes -->
       <template v-slot:item.acoes="{ item }">
