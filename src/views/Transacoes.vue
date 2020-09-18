@@ -145,7 +145,7 @@
       <template v-slot:footer>
         <v-toolbar flat color="white">
           <v-spacer></v-spacer>
-          <v-toolbar-title>Valor Total: R$ {{testeSoma()}}</v-toolbar-title>
+          <v-toolbar-title><v-chip outlined color="green" class="ma-5">Valor Total: <v-chip color="white" x-large>R$ {{testeSoma().toFixed(2)}}</v-chip></v-chip></v-toolbar-title>
         </v-toolbar>
       </template>
     </v-data-table>
@@ -157,8 +157,12 @@ export default {
   data: () => ({
     cabecalhoTransacoes: [
       {
-        text: "Nome",
+        text: "Nome do Cliente",
         value: "cliente.nome",
+      },
+       {
+        text: "Nome Empresa",
+        value: "empresa.nome",
       },
       {
         text: "Data",
@@ -268,8 +272,8 @@ export default {
           dataTransacoes: "11/01/2020",
           valor: 100.3456,
           empresa: {
-            id: 0,
-            nome: "Petisco de Gato",
+            id: 1,
+            nome: "Espetinho Gordo",
             endereco: {
               rua: "Esquina do gato",
               numero: 15,
@@ -343,8 +347,8 @@ export default {
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
-            id: 0,
-            nome: "Petisco de Gato",
+            id: 2,
+            nome: "Gato Assado",
             endereco: {
               rua: "Esquina do gato",
               numero: 15,
@@ -380,8 +384,8 @@ export default {
           dataTransacoes: "11/01/2020",
           valor: 48.50,
           empresa: {
-            id: 0,
-            nome: "Petisco de Gato",
+            id: 3,
+            nome: "Espetinho de Gato",
             endereco: {
               rua: "Esquina do gato",
               numero: 15,
@@ -413,8 +417,8 @@ export default {
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
-            id: 0,
-            nome: "Petisco de Gato",
+            id: 4,
+            nome: "João do Espeto",
             endereco: {
               rua: "Esquina do gato",
               numero: 15,
@@ -445,6 +449,7 @@ export default {
     },
 
     testeSoma() {
+     
       if (this.transacoes.length <= 0) {
         return 0;
       }
