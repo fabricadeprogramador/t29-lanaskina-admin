@@ -42,7 +42,7 @@
                             <v-row style="height: 60px;">
                               <v-col cols="12" sm="2">
                                 <v-text-field
-                                  v-model="transacaoCorrente.idTransacoes"
+                                  v-model="transacaoCorrente.cliente.id"
                                   label="ID"
                                   outlined
                                   :disabled="isDisable"
@@ -186,12 +186,7 @@ export default {
       cliente: {
         id: "",
         nome: "",
-        username: "",
-        // endereco: {
-        //   rua: "",
-        //   numero: "",
-        //   bairro: "",
-        // },
+        username: "",      
       },
       idTransacoes: "",
       dataTransacoes: "",
@@ -372,6 +367,8 @@ export default {
           status: "Concluido",
         },
         {
+          id: 4,
+          ativo: true,
           cliente: {
             id: 4,
             nome: "Amarildo Duarte",
@@ -403,10 +400,10 @@ export default {
         },
 
         {
-          id: 4,
+          id: 5,
           ativo: false,
           cliente: {
-            id: 4,
+            id: 5,
             nome: "Silvana da Costa",
             username: "jao01",
             senha: "123",
