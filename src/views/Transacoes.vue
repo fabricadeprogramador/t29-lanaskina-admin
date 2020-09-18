@@ -25,8 +25,7 @@
       </template>
       <!-- Início abertura/fechamento Dialog e ativar/inativar clientes -->
       <template v-slot:item.acoes="{ item }">
-        <v-icon small class="mr-2" color="primary" @click="abrirDialog(item)">mdi-file-find</v-icon>
-        <v-icon small color="green" @click>mdi-check-bold</v-icon>
+        <v-icon small class="mr-2" color="primary" @click="abrirDialog(item)">mdi-file-find</v-icon>        
         <v-row justify="center">
           <v-dialog v-model="isDialogOpen" width="600px">
             <v-card>
