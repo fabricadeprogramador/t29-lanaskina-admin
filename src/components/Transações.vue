@@ -178,7 +178,7 @@ export default {
   data: () => ({
     cabecalhoTransacoes: [
       {
-        text: "Nome do Cliente",
+        text: "Cliente",
         value: "cliente.nome",
       },
       {
@@ -233,7 +233,7 @@ export default {
       console.log(this.isViewsTransacoes);
       if (this.isViewsTransacoes) {
         this.cabecalhoTransacoes.splice(1, 0, {
-          text: "Nome Empresa",
+          text: "Empresa",
           value: "empresa.nome",
         });
       }

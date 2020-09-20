@@ -46,7 +46,7 @@ export default {
   props: {
     source: String,
   },
-  data: () => ({
+  data:()=>({
     drawer: null,
     titulo: "Lanaskina Admin",
     rodape: "Fábrica de Programador - High Tech Cursos -",

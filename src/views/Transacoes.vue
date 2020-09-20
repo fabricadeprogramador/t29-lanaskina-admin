@@ -9,9 +9,11 @@ export default {
   components: {
     transacoes,
   }, 
-  data: () => {
+  data:() => (
+    {
       todasEmpresas: []
-  },
+  }
+  ),
   created() {
     this.initialize();
   },
