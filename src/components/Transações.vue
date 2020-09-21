@@ -230,7 +230,7 @@ export default {
 
   methods: {
     initialize() {
-      console.log(this.isViewsTransacoes);
+     // console.log(this.isViewsTransacoes);
       if (this.isViewsTransacoes) {
         this.cabecalhoTransacoes.splice(1, 0, {
           text: "Empresa",
