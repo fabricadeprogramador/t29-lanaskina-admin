@@ -52,7 +52,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="limparEFecharEmpresaNova">Fechar</v-btn>
-              <v-btn color="blue darken-1" text @click="salvarNovaEmpresa()">Salvar</v-btn>
+              <v-btn color="blue darken-1" text @click="salvarNovaEmpresa">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -158,9 +158,9 @@ export default {
       this.novaEmpresa.cnpj = "";
       this.novaEmpresa.email = "";
       this.novaEmpresa.tel = "";
-      this.novaEmpresa.rua = "";
-      this.novaEmpresa.numero = "";
-      this.novaEmpresa.bairro = "";
+      this.novaEmpresa.endereco.rua = "";
+      this.novaEmpresa.endereco.numero = "";
+      this.novaEmpresa.endereco.bairro = "";
       this.isDialogOpen = false;
     },
 
@@ -267,13 +267,17 @@ export default {
           dataTransacoes: "11/01/2020",
           valor: 48.5,
           empresa: {
-            id: 0,
-            nome: "Petisco de Gato",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
+          id: 0,
+          nome: "Petisco de Gato",
+          cnpj: "001.002.003",
+          email: "lalala@gmail.com",
+          status: true,
+          tel: "67981234567",
+          endereco: {
+            rua: "Esquina do gato",
+            numero: 15,
+            bairro: "Gato Preto",
+          },
           },
           produtos: [
             {
@@ -309,13 +313,17 @@ export default {
           dataTransacoes: "11/01/2020",
           valor: 100.3456,
           empresa: {
-            id: 1,
-            nome: "Espetinho Gordo",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
+          id: 1,
+          nome: "Espetinho João",
+          cnpj: "001.002.003",
+          email: "lalala@gmail.com",
+          status: true,
+          tel: "67981234567",
+          endereco: {
+            rua: "Esquina do gato",
+            numero: 15,
+            bairro: "Gato Preto",
+          },
           },
           produtos: [
             {
@@ -346,13 +354,17 @@ export default {
           dataTransacoes: "11/01/2020",
           valor: 22.5,
           empresa: {
-            id: 0,
-            nome: "Petisco de Gato",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
+          id: 2,
+          nome: "Masseria Fradelli",
+          cnpj: "001.002.003",
+          email: "lalala@gmail.com",
+          status: true,
+          tel: "67981234567",
+          endereco: {
+            rua: "Esquina do gato",
+            numero: 15,
+            bairro: "Gato Preto",
+          },
           },
           produtos: [
             {
@@ -382,13 +394,17 @@ export default {
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
-            id: 2,
-            nome: "Gato Assado",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
+          id: 3,
+          nome: "Feijoca do Zé",
+          cnpj: "001.002.003",
+          email: "lalala@gmail.com",
+          status: true,
+          tel: "67981234567",
+          endereco: {
+            rua: "Esquina do gato",
+            numero: 15,
+            bairro: "Gato Preto",
+          },
           },
           produtos: [
             {
@@ -418,14 +434,18 @@ export default {
           idTransacoes: 3,
           dataTransacoes: "11/01/2020",
           valor: 48.5,
-          empresa: {
-            id: 3,
-            nome: "Espetinho de Gato",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
+          empresa:{
+          id: 4,
+          nome: "Tapiocaria Plinio",
+          cnpj: "001.002.003",
+          email: "lalala@gmail.com",
+          status: true,
+          tel: "67981234567",
+          endereco: {
+            rua: "Esquina do gato",
+            numero: 15,
+            bairro: "Gato Preto",
+          },
           },
           produtos: [
             {
@@ -451,13 +471,17 @@ export default {
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
-            id: 4,
-            nome: "João do Espeto",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
+          id: 5,
+          nome: "Bar do Almeida",
+          cnpj: "001.002.003",
+          email: "lalala@gmail.com",
+          status: true,
+          tel: "67981234567",
+          endereco: {
+            rua: "Esquina do gato",
+            numero: 15,
+            bairro: "Gato Preto",
+          },
           },
           produtos: [
             {
