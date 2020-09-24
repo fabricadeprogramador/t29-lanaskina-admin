@@ -158,58 +158,91 @@
     </template>
   </v-data-table> -->
 
-      <v-card-text elevation="5">
-        <v-card-title class="headline ">Dados da Empresa</v-card-title>
-        <v-row elevation="1">
-          <v-col cols="12" sm="3">
-            <v-card-text>
-              <strong>Nome: </strong> {{ empresaSelecionada.nome }}</v-card-text
-            >
-          </v-col>
-          <v-col cols="12" sm="2">
-            <v-card-text>
-              <strong>Cnpj: </strong>{{ empresaSelecionada.cnpj }}</v-card-text
-            >
-          </v-col>
-          <v-col cols="12" sm="3">
-            <v-card-text>
-              <strong>Contato: </strong>
-              {{ empresaSelecionada.tel }}</v-card-text
-            >
-          </v-col>
-          <v-col cols="12" sm="2">
-            <v-card-text v-if="empresaSelecionada.status != null">
-              <strong>Status: </strong
-              >{{
-                empresaSelecionada.status ? "Ativo" : "Inativo"
-              }}</v-card-text
-            >
-          </v-col>
-          <v-col cols="12" sm="2">
-            <v-btn small color="primary" class="mt-2">Editar</v-btn>
-          </v-col>
-        </v-row>
-        <v-card-title class="headline ">Produtos Cadastrados:</v-card-title>
-                 
+      <v-card-text>
+        <v-card elevation="5">
+          <v-card-title class="headline ">Dados da Empresa</v-card-title>
+          <v-row>
+            <v-col cols="12" sm="3">
+              <v-card-text>
+                <strong>Nome: </strong>
+                {{ empresaSelecionada.nome }}</v-card-text
+              >
+            </v-col>
+            <v-col cols="12" sm="2">
+              <v-card-text>
+                <strong>Cnpj: </strong
+                >{{ empresaSelecionada.cnpj }}</v-card-text
+              >
+            </v-col>
+            <v-col cols="12" sm="3">
+              <v-card-text>
+                <strong>Contato: </strong>
+                {{ empresaSelecionada.tel }}</v-card-text
+              >
+            </v-col>
+            <v-col cols="12" sm="2">
+              <v-card-text v-if="empresaSelecionada.status != null">
+                <strong>Status: </strong
+                >{{
+                  empresaSelecionada.status ? "Ativo" : "Inativo"
+                }}</v-card-text
+              >
+            </v-col>
+            <v-col cols="12" sm="2">
+              <v-btn small color="primary" class="mt-2">Editar </v-btn>
+            </v-col>
+          </v-row>
+        </v-card>
+        <hr />
+        <v-card elevation="5">
+          <v-row>
+            <v-col cols="12" sm="10">
+              <v-card-title class="headline "
+                >Produtos Cadastrados:</v-card-title
+              >
+            </v-col>
+
+            <v-col cols="12" sm="2" class="mt-2">
+              <v-btn color="primary" small class="mt-2">Novo Produto</v-btn>
+            </v-col>
+          </v-row>
+
           <v-data-table
-             :headers="cabecalhoProduto"
-             :items="empresaSelecionada.produtos"            
-             sort-by="nome"
-             class="elevation-1"
-             >
-             <template v-slot:item.acao="{ item }">
-              <v-icon small class="mr-2" @click="abrirDIalog(item)" color="primary">mdi-pencil</v-icon>
-              <v-icon small @click="ativarInativar(item)" v-if="item.ativo" color="green">mdi-check-bold</v-icon>
-              <v-icon small @click="ativarInativar(item)" v-else color="red">mdi-cancel</v-icon>
-              </template>
+            :headers="cabecalhoProduto"
+            :items="empresaSelecionada.produtos"
+            sort-by="nome"
+            class="elevation-1"
+          >
+            <template v-slot:item.acao="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="abrirDIalog(item)"
+                color="primary"
+                >mdi-pencil</v-icon
+              >
+              <v-icon
+                small
+                @click="ativarInativar(item)"
+                v-if="item.ativo"
+                color="green"
+                >mdi-check-bold</v-icon
+              >
+              <v-icon small @click="ativarInativar(item)" v-else color="red"
+                >mdi-cancel</v-icon
+              >
+            </template>
           </v-data-table>
-       
+        </v-card>
+        <hr />
+        <v-card elevation="5">
+          <transacoes
+            :movimentacao_empresa="transacoesPorEmpresa"
+            :isViewsTransacoes="false"
+          ></transacoes>
+        </v-card>
       </v-card-text>
     </v-card>
-    <transacoes
-      :movimentacao_empresa="transacoesPorEmpresa"
-      :isViewsTransacoes="false"
-    ></transacoes>
   </div>
 </template>
 
@@ -245,7 +278,7 @@ export default {
         value: "acoes"
       }
     ],
-    cabecalhoProduto:[
+    cabecalhoProduto: [
       {
         text: "Nome",
         value: "nome"
@@ -258,7 +291,7 @@ export default {
         text: "Valor",
         value: "valor"
       },
-       {
+      {
         text: "Ação",
         value: "acao"
       }
@@ -343,28 +376,30 @@ export default {
             numero: 15,
             bairro: "Gato Preto"
           },
-          produtos:[
+          produtos: [
             {
-              id:0,
-              ativo:true,
+              id: 0,
+              ativo: true,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne,frango ou linguiça 100g",
               valor: 8
             },
             {
-              id:1,
-              ativo:true,
+              id: 1,
+              ativo: true,
               nome: "Espetinho completo",
-              descricao: "Espetinho de carne,frango ou linguiça 100g com mandioca e vinagrete",
+              descricao:
+                "Espetinho de carne,frango ou linguiça 100g com mandioca e vinagrete",
               valor: 18
             },
             {
-              id:2,
-              ativo:true,
+              id: 2,
+              ativo: true,
               nome: "Espetinho com mandioca",
-              descricao: "Espetinho de carne,frango ou linguiça 100g com mandioca ",
+              descricao:
+                "Espetinho de carne,frango ou linguiça 100g com mandioca ",
               valor: 12
-            },
+            }
           ]
         },
 
@@ -380,25 +415,27 @@ export default {
             numero: 15,
             bairro: "Gato Preto"
           },
-           produtos:[
+          produtos: [
             {
-              id:0,
+              id: 0,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne ou frango ou linguiça 100g",
               valor: 8
             },
             {
-              id:1,
+              id: 1,
               nome: "Espetinho completo",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
+              descricao:
+                "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
               valor: 18
             },
             {
-              id:2,
+              id: 2,
               nome: "Espetinho com mandioca",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
+              descricao:
+                "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
               valor: 12
-            },
+            }
           ]
         },
 
@@ -414,25 +451,27 @@ export default {
             numero: 15,
             bairro: "Gato Preto"
           },
-           produtos:[
+          produtos: [
             {
-              id:0,
+              id: 0,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne ou frango ou linguiça 100g",
               valor: 8
             },
             {
-              id:1,
+              id: 1,
               nome: "Espetinho completo",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
+              descricao:
+                "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
               valor: 18
             },
             {
-              id:2,
+              id: 2,
               nome: "Espetinho com mandioca",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
+              descricao:
+                "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
               valor: 12
-            },
+            }
           ]
         },
 
@@ -448,25 +487,27 @@ export default {
             numero: 15,
             bairro: "Gato Preto"
           },
-           produtos:[
+          produtos: [
             {
-              id:0,
+              id: 0,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne ou frango ou linguiça 100g",
               valor: 8
             },
             {
-              id:1,
+              id: 1,
               nome: "Espetinho completo",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
+              descricao:
+                "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
               valor: 18
             },
             {
-              id:2,
+              id: 2,
               nome: "Espetinho com mandioca",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
+              descricao:
+                "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
               valor: 12
-            },
+            }
           ]
         },
 
@@ -482,25 +523,27 @@ export default {
             numero: 15,
             bairro: "Gato Preto"
           },
-           produtos:[
+          produtos: [
             {
-              id:0,
+              id: 0,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne ou frango ou linguiça 100g",
               valor: 8
             },
             {
-              id:1,
+              id: 1,
               nome: "Espetinho completo",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
+              descricao:
+                "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
               valor: 18
             },
             {
-              id:2,
+              id: 2,
               nome: "Espetinho com mandioca",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
+              descricao:
+                "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
               valor: 12
-            },
+            }
           ]
         },
 
@@ -516,25 +559,27 @@ export default {
             numero: 15,
             bairro: "Gato Preto"
           },
-           produtos:[
+          produtos: [
             {
-              id:0,
+              id: 0,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne ou frango ou linguiça 100g",
               valor: 8
             },
             {
-              id:1,
+              id: 1,
               nome: "Espetinho completo",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
+              descricao:
+                "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
               valor: 18
             },
             {
-              id:2,
+              id: 2,
               nome: "Espetinho com mandioca",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
+              descricao:
+                "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
               valor: 12
-            },
+            }
           ]
         }
       ];
