@@ -13,13 +13,25 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field label="Nome da Empresa*" required v-model="novaEmpresa.nome"></v-text-field>
+                    <v-text-field
+                      label="Nome da Empresa*"
+                      required
+                      v-model="novaEmpresa.nome"
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field label="CNPJ" hint="CNPJ da empresa" v-model="novaEmpresa.cnpj"></v-text-field>
+                    <v-text-field
+                      label="CNPJ"
+                      hint="CNPJ da empresa"
+                      v-model="novaEmpresa.cnpj"
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field label="Email" hint="Email da empresa" v-model="novaEmpresa.email"></v-text-field>
+                    <v-text-field
+                      label="Email"
+                      hint="Email da empresa"
+                      v-model="novaEmpresa.email"
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
@@ -29,7 +41,11 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field label="Rua" hint="Logradouro" v-model="novaEmpresa.endereco.rua"></v-text-field>
+                    <v-text-field
+                      label="Rua"
+                      hint="Logradouro"
+                      v-model="novaEmpresa.endereco.rua"
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
@@ -51,8 +67,15 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="limparEFecharEmpresaNova">Fechar</v-btn>
-              <v-btn color="blue darken-1" text @click="salvarNovaEmpresa">Salvar</v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="limparEFecharEmpresaNova"
+                >Fechar</v-btn
+              >
+              <v-btn color="blue darken-1" text @click="salvarNovaEmpresa"
+                >Salvar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -60,21 +83,27 @@
     </template>
     <!-- final dialog nova empresa -->
 
+    <!-- inicio msg de validação -->
     <v-row justify="center">
       <v-col sm="9">
         <v-slide-y-transition leave-absolute>
-          <v-alert class="mt-3" type="warning" v-if="validacao != ''">{{validacao}}</v-alert>
+          <v-alert class="mt-3" type="warning" v-if="validacao != ''">{{
+            validacao
+          }}</v-alert>
         </v-slide-y-transition>
       </v-col>
     </v-row>
+    <!-- Fim msg de validação -->
+
+    <!-- inicio select de empresa -->
     <v-row class="mb-10">
       <v-col cols="4" sm="3" class="ma-0 ml-4 pa-0">
         <v-select
-          :items="transacoesGeral"
+          :items="empresas"
           label="Empresas"
           outlined
-          item-text="empresa.nome"
-          item-value="empresa.nome"
+          item-text="nome"
+          item-value="nome"
           v-model="selectEmpresa"
           dense
         ></v-select>
@@ -87,7 +116,100 @@
         <v-btn color="primary" @click="openDialog()">Nova Empresa</v-btn>
       </v-col>
     </v-row>
-    <transacoes :movimentacao_empresa="transacoesPorEmpresa" :isViewsTransacoes="false"></transacoes>
+    <!-- fim select empresa -->
+
+    <!-- inicio Data-table da empresa -->
+    <v-card class="pt-0 mt-0">
+      <!-- <v-data-table
+    :headers="cabecalhoEmpresas"
+    :items="empresaSelecionada"
+    class="elevation-1"
+  >
+    <template v-slot:item.acoes="{ item }">
+      <v-icon
+        small
+        class="mr-2"
+        @click="editItem(item)"
+        color="primary"
+      >
+        mdi-pencil
+      </v-icon>
+      <v-icon
+        v-if="item.status"
+        color="green"
+        small
+        @click="deleteItem(item)"
+
+      >
+        mdi-check-bold
+      </v-icon>
+       <v-icon
+        v-else
+        color="red"
+        small
+        @click="deleteItem(item)"
+
+      >
+        mdi-cancel
+      </v-icon>
+    </template>
+    <template v-slot:no-data>
+      <h1>Nenhuma empresa Selecionada</h1>
+    </template>
+  </v-data-table> -->
+
+      <v-card-text elevation="5">
+        <v-card-title class="headline ">Dados da Empresa</v-card-title>
+        <v-row elevation="1">
+          <v-col cols="12" sm="3">
+            <v-card-text>
+              <strong>Nome: </strong> {{ empresaSelecionada.nome }}</v-card-text
+            >
+          </v-col>
+          <v-col cols="12" sm="2">
+            <v-card-text>
+              <strong>Cnpj: </strong>{{ empresaSelecionada.cnpj }}</v-card-text
+            >
+          </v-col>
+          <v-col cols="12" sm="3">
+            <v-card-text>
+              <strong>Contato: </strong>
+              {{ empresaSelecionada.tel }}</v-card-text
+            >
+          </v-col>
+          <v-col cols="12" sm="2">
+            <v-card-text v-if="empresaSelecionada.status != null">
+              <strong>Status: </strong
+              >{{
+                empresaSelecionada.status ? "Ativo" : "Inativo"
+              }}</v-card-text
+            >
+          </v-col>
+          <v-col cols="12" sm="2">
+            <v-btn small color="primary" class="mt-2">Editar</v-btn>
+          </v-col>
+        </v-row>
+        <v-card-title class="headline ">Produtos Cadastrados:</v-card-title>
+                 
+          <v-data-table
+             :headers="cabecalhoProduto"
+             :items="empresaSelecionada.produtos"            
+             sort-by="nome"
+             class="elevation-1"
+             >
+             <template v-slot:item.acao="{ item }">
+              <v-icon small class="mr-2" @click="abrirDIalog(item)" color="primary">mdi-pencil</v-icon>
+              <v-icon small @click="ativarInativar(item)" v-if="item.ativo" color="green">mdi-check-bold</v-icon>
+              <v-icon small @click="ativarInativar(item)" v-else color="red">mdi-cancel</v-icon>
+              </template>
+          </v-data-table>
+       
+      </v-card-text>
+    </v-card>
+    <transacoes
+      :movimentacao_empresa="transacoesPorEmpresa"
+      :isViewsTransacoes="false"
+    ></transacoes>
   </div>
 </template>
 
@@ -101,9 +223,46 @@ import transacoes from "../components/Transações";
 
 export default {
   components: {
-    transacoes,
+    transacoes
   },
   data: () => ({
+    empresaSelecionada: {},
+    cabecalhoEmpresas: [
+      {
+        text: "Nome",
+        value: "nome"
+      },
+      {
+        text: "Contato",
+        value: "tel"
+      },
+      {
+        text: "Cnpj",
+        value: "cnpj"
+      },
+      {
+        text: "Ações",
+        value: "acoes"
+      }
+    ],
+    cabecalhoProduto:[
+      {
+        text: "Nome",
+        value: "nome"
+      },
+      {
+        text: "Descrição",
+        value: "descricao"
+      },
+      {
+        text: "Valor",
+        value: "valor"
+      },
+       {
+        text: "Ação",
+        value: "acao"
+      }
+    ],
     transacoesGeral: [],
     selectEmpresa: "",
     validacao: "",
@@ -120,11 +279,11 @@ export default {
       endereco: {
         rua: "",
         numero: "",
-        bairro: "",
-      },
+        bairro: ""
+      }
     },
     empresas: [],
-    geradorId: 6,
+    geradorId: 6
   }),
   created() {
     this.initTransacoesDasEmpresas();
@@ -140,10 +299,16 @@ export default {
       this.validacao = "";
 
       this.transacoesPorEmpresa.splice(0, this.transacoesPorEmpresa.length);
+      //this.empresaSelecionada.splice(0, this.empresaSelecionada.length);
 
       for (let i = 0; i < this.transacoesGeral.length; i++) {
         if (this.transacoesGeral[i].empresa.nome == this.selectEmpresa) {
           this.transacoesPorEmpresa.push(this.transacoesGeral[i]);
+        }
+        if (this.empresas[i].nome == this.selectEmpresa) {
+          // this.empresaSelecionada.push(this.empresas[i])
+          console.log(JSON.stringify(this.empresas[i]));
+          this.empresaSelecionada = this.empresas[i];
         }
       }
     },
@@ -171,13 +336,36 @@ export default {
           nome: "Petisco de Gato",
           cnpj: "001.002.003",
           email: "lalala@gmail.com",
-          status: true,
+          status: false,
           tel: "67981234567",
           endereco: {
             rua: "Esquina do gato",
             numero: 15,
-            bairro: "Gato Preto",
+            bairro: "Gato Preto"
           },
+          produtos:[
+            {
+              id:0,
+              ativo:true,
+              nome: "Espetinho simples",
+              descricao: "Espetinho de carne,frango ou linguiça 100g",
+              valor: 8
+            },
+            {
+              id:1,
+              ativo:true,
+              nome: "Espetinho completo",
+              descricao: "Espetinho de carne,frango ou linguiça 100g com mandioca e vinagrete",
+              valor: 18
+            },
+            {
+              id:2,
+              ativo:true,
+              nome: "Espetinho com mandioca",
+              descricao: "Espetinho de carne,frango ou linguiça 100g com mandioca ",
+              valor: 12
+            },
+          ]
         },
 
         {
@@ -190,8 +378,28 @@ export default {
           endereco: {
             rua: "Esquina do gato",
             numero: 15,
-            bairro: "Gato Preto",
+            bairro: "Gato Preto"
           },
+           produtos:[
+            {
+              id:0,
+              nome: "Espetinho simples",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g",
+              valor: 8
+            },
+            {
+              id:1,
+              nome: "Espetinho completo",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
+              valor: 18
+            },
+            {
+              id:2,
+              nome: "Espetinho com mandioca",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
+              valor: 12
+            },
+          ]
         },
 
         {
@@ -204,8 +412,28 @@ export default {
           endereco: {
             rua: "Esquina do gato",
             numero: 15,
-            bairro: "Gato Preto",
+            bairro: "Gato Preto"
           },
+           produtos:[
+            {
+              id:0,
+              nome: "Espetinho simples",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g",
+              valor: 8
+            },
+            {
+              id:1,
+              nome: "Espetinho completo",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
+              valor: 18
+            },
+            {
+              id:2,
+              nome: "Espetinho com mandioca",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
+              valor: 12
+            },
+          ]
         },
 
         {
@@ -218,8 +446,28 @@ export default {
           endereco: {
             rua: "Esquina do gato",
             numero: 15,
-            bairro: "Gato Preto",
+            bairro: "Gato Preto"
           },
+           produtos:[
+            {
+              id:0,
+              nome: "Espetinho simples",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g",
+              valor: 8
+            },
+            {
+              id:1,
+              nome: "Espetinho completo",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
+              valor: 18
+            },
+            {
+              id:2,
+              nome: "Espetinho com mandioca",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
+              valor: 12
+            },
+          ]
         },
 
         {
@@ -232,8 +480,28 @@ export default {
           endereco: {
             rua: "Esquina do gato",
             numero: 15,
-            bairro: "Gato Preto",
+            bairro: "Gato Preto"
           },
+           produtos:[
+            {
+              id:0,
+              nome: "Espetinho simples",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g",
+              valor: 8
+            },
+            {
+              id:1,
+              nome: "Espetinho completo",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
+              valor: 18
+            },
+            {
+              id:2,
+              nome: "Espetinho com mandioca",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
+              valor: 12
+            },
+          ]
         },
 
         {
@@ -246,9 +514,29 @@ export default {
           endereco: {
             rua: "Esquina do gato",
             numero: 15,
-            bairro: "Gato Preto",
+            bairro: "Gato Preto"
           },
-        },
+           produtos:[
+            {
+              id:0,
+              nome: "Espetinho simples",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g",
+              valor: 8
+            },
+            {
+              id:1,
+              nome: "Espetinho completo",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
+              valor: 18
+            },
+            {
+              id:2,
+              nome: "Espetinho com mandioca",
+              descricao: "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
+              valor: 12
+            },
+          ]
+        }
       ];
 
       this.transacoesGeral = [
@@ -261,42 +549,42 @@ export default {
             username: "jao01",
             senha: "123",
             role: "ADMIN",
-            ativo: false,
+            ativo: false
           },
           idTransacoes: 0,
           dataTransacoes: "11/01/2020",
           valor: 48.5,
           empresa: {
-          id: 0,
-          nome: "Petisco de Gato",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
+            id: 0,
+            nome: "Petisco de Gato",
+            cnpj: "001.002.003",
+            email: "lalala@gmail.com",
+            status: true,
+            tel: "67981234567",
+            endereco: {
+              rua: "Esquina do gato",
+              numero: 15,
+              bairro: "Gato Preto"
+            }
           },
           produtos: [
             {
               id: 0,
               nome: "Espetinho Simples",
-              valor: 8.0,
+              valor: 8.0
             },
             {
               id: 1,
               nome: "Espetinho com mandioca",
-              valor: 10.5,
+              valor: 10.5
             },
             {
               id: 1,
               nome: "Espetinho com Completo",
-              valor: 30.0,
-            },
+              valor: 30.0
+            }
           ],
-          status: "Concluido",
+          status: "Concluido"
         },
         {
           id: 1,
@@ -307,37 +595,37 @@ export default {
             username: "mariaa",
             senha: "123",
             role: "ADMIN",
-            ativo: true,
+            ativo: true
           },
           idTransacoes: 1,
           dataTransacoes: "11/01/2020",
           valor: 100.3456,
           empresa: {
-          id: 1,
-          nome: "Espetinho João",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
+            id: 1,
+            nome: "Espetinho João",
+            cnpj: "001.002.003",
+            email: "lalala@gmail.com",
+            status: true,
+            tel: "67981234567",
+            endereco: {
+              rua: "Esquina do gato",
+              numero: 15,
+              bairro: "Gato Preto"
+            }
           },
           produtos: [
             {
               id: 0,
               nome: "Espetinho Completo",
-              valor: 50.0324,
+              valor: 50.0324
             },
             {
               id: 1,
               nome: "Espetinho com mandioca",
-              valor: 50.3,
-            },
+              valor: 50.3
+            }
           ],
-          status: "Aberto",
+          status: "Aberto"
         },
         {
           id: 2,
@@ -348,37 +636,37 @@ export default {
             username: "jao01",
             senha: "123",
             role: "ADMIN",
-            ativo: true,
+            ativo: true
           },
           idTransacoes: 2,
           dataTransacoes: "11/01/2020",
           valor: 22.5,
           empresa: {
-          id: 2,
-          nome: "Masseria Fradelli",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
+            id: 2,
+            nome: "Masseria Fradelli",
+            cnpj: "001.002.003",
+            email: "lalala@gmail.com",
+            status: true,
+            tel: "67981234567",
+            endereco: {
+              rua: "Esquina do gato",
+              numero: 15,
+              bairro: "Gato Preto"
+            }
           },
           produtos: [
             {
               id: 0,
               nome: "Espetinho simples",
-              valor: 12.0,
+              valor: 12.0
             },
             {
               id: 1,
               nome: "Espetinho com mandioca",
-              valor: 10.5,
-            },
+              valor: 10.5
+            }
           ],
-          status: "Cancelado",
+          status: "Cancelado"
         },
         {
           id: 3,
@@ -389,36 +677,36 @@ export default {
             username: "jao01",
             senha: "123",
             role: "ADMIN",
-            ativo: true,
+            ativo: true
           },
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
-          id: 3,
-          nome: "Feijoca do Zé",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
+            id: 3,
+            nome: "Feijoca do Zé",
+            cnpj: "001.002.003",
+            email: "lalala@gmail.com",
+            status: true,
+            tel: "67981234567",
+            endereco: {
+              rua: "Esquina do gato",
+              numero: 15,
+              bairro: "Gato Preto"
+            }
           },
           produtos: [
             {
               id: 0,
               nome: "Espetinho Completo",
-              valor: 60.0,
+              valor: 60.0
             },
             {
               id: 1,
               nome: "Espetinho com mandioca",
-              valor: 40.0,
-            },
+              valor: 40.0
+            }
           ],
-          status: "Concluido",
+          status: "Concluido"
         },
         {
           id: 4,
@@ -429,32 +717,32 @@ export default {
             username: "jao01",
             senha: "123",
             role: "ADMIN",
-            ativo: false,
+            ativo: false
           },
           idTransacoes: 3,
           dataTransacoes: "11/01/2020",
           valor: 48.5,
-          empresa:{
-          id: 4,
-          nome: "Tapiocaria Plinio",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
+          empresa: {
+            id: 4,
+            nome: "Tapiocaria Plinio",
+            cnpj: "001.002.003",
+            email: "lalala@gmail.com",
+            status: true,
+            tel: "67981234567",
+            endereco: {
+              rua: "Esquina do gato",
+              numero: 15,
+              bairro: "Gato Preto"
+            }
           },
           produtos: [
             {
               id: 0,
               nome: "Espetinho Completo",
-              valor: 48.5,
-            },
+              valor: 48.5
+            }
           ],
-          status: "Concluido",
+          status: "Concluido"
         },
         {
           id: 5,
@@ -465,38 +753,38 @@ export default {
             username: "jao01",
             senha: "123",
             role: "ADMIN",
-            ativo: false,
+            ativo: false
           },
           idTransacoes: 4,
           dataTransacoes: "11/01/2020",
           valor: 100,
           empresa: {
-          id: 5,
-          nome: "Bar do Almeida",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
+            id: 5,
+            nome: "Bar do Almeida",
+            cnpj: "001.002.003",
+            email: "lalala@gmail.com",
+            status: true,
+            tel: "67981234567",
+            endereco: {
+              rua: "Esquina do gato",
+              numero: 15,
+              bairro: "Gato Preto"
+            }
           },
           produtos: [
             {
               id: 0,
               nome: "Espetinho Completo",
-              valor: 75.5,
+              valor: 75.5
             },
             {
               id: 1,
               nome: "Espetinho com mandioca",
-              valor: 24.5,
-            },
+              valor: 24.5
+            }
           ],
-          status: "Aberto",
-        },
+          status: "Aberto"
+        }
       ];
     },
 
@@ -506,15 +794,9 @@ export default {
       var empresaSalvando = Object.assign({}, this.novaEmpresa);
       this.empresas.push(empresaSalvando);
       console.log(this.empresas);
-    },
-
-    // limparBusca() {
-    //   if(this.selectEmpresa != this.transacoesPorEmpresa.nome){
-    //     this.transacoesPorEmpresa = [];
-    //   }
-    // },
-
-  },
+      this.isDialogOpen = !this.isDialogOpen;
+    }
+  }
 };
 </script>
 
