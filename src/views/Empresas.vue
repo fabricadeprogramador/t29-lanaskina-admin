@@ -7,7 +7,7 @@
           <!-- <v-dialog v-model="isDialogOpen" persistent max-width="600px"> -->
           <v-card>
             <v-card-title>
-              <span class="headline">Nova Empresa</span>
+              <span class="headline">{{edicao?"Edição Empresa":"Nova Empresa"}}</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -73,7 +73,10 @@
                 @click="limparEFecharEmpresaNova"
                 >Fechar</v-btn
               >
-              <v-btn color="blue darken-1" text @click="salvarNovaEmpresa"
+              <v-btn v-if="edicao" color="blue darken-1" text @click="atualizarEmpresa"
+                >Atualizar</v-btn
+              >
+              <v-btn v-else color="blue darken-1" text @click="salvarNovaEmpresa"
                 >Salvar</v-btn
               >
             </v-card-actions>
@@ -113,52 +116,13 @@
       </v-col>
       <v-spacer></v-spacer>
       <v-col cols="3" sm="3" class="ma-0 pa-0">
-        <v-btn color="primary" @click="openDialog()">Nova Empresa</v-btn>
+        <v-btn color="success" @click="openDialog()">Nova Empresa</v-btn>
       </v-col>
     </v-row>
     <!-- fim select empresa -->
 
     <!-- inicio Data-table da empresa -->
     <v-card class="pt-0 mt-0">
-      <!-- <v-data-table
-    :headers="cabecalhoEmpresas"
-    :items="empresaSelecionada"
-    class="elevation-1"
-  >
-    <template v-slot:item.acoes="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
-        color="primary"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        v-if="item.status"
-        color="green"
-        small
-        @click="deleteItem(item)"
-
-      >
-        mdi-check-bold
-      </v-icon>
-       <v-icon
-        v-else
-        color="red"
-        small
-        @click="deleteItem(item)"
-
-      >
-        mdi-cancel
-      </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <h1>Nenhuma empresa Selecionada</h1>
-    </template>
-  </v-data-table> -->
-    
-
       <v-card-text>
         <v-card elevation="5">
           
@@ -170,31 +134,31 @@
             <v-col cols="12" sm="3">
               <v-card-text>
                 <strong>Nome: </strong>
-                {{ empresaSelecionada.nome }}</v-card-text
+                {{ novaEmpresa.nome }}</v-card-text
               >
             </v-col>
             <v-col cols="12" sm="2">
               <v-card-text>
                 <strong>Cnpj: </strong
-                >{{ empresaSelecionada.cnpj }}</v-card-text
+                >{{ novaEmpresa.cnpj }}</v-card-text
               >
             </v-col>
             <v-col cols="12" sm="3">
               <v-card-text>
                 <strong>Contato: </strong>
-                {{ empresaSelecionada.tel }}</v-card-text
+                {{ novaEmpresa.tel }}</v-card-text
               >
             </v-col>
             <v-col cols="12" sm="2">
-              <v-card-text v-if="empresaSelecionada.status != null">
+              <v-card-text v-if="novaEmpresa.status != null">
                 <strong>Status: </strong
                 >{{
-                  empresaSelecionada.status ? "Ativo" : "Inativo"
+                  novaEmpresa.status ? "Ativo" : "Inativo"
                 }}</v-card-text
               >
             </v-col>
             <v-col cols="12" sm="2">
-              <v-btn small color="primary" class="mt-2">Editar </v-btn>
+              <v-btn small color="warning" class="mt-2" @click="editarEmpresa(novaEmpresa)">Editar </v-btn>
             </v-col>
           </v-row>
         </v-card>
@@ -208,13 +172,13 @@
             </v-col>
 
             <v-col cols="12" sm="2" class="mt-2">
-              <v-btn color="primary" small class="mt-2">Novo Produto</v-btn>
+              <v-btn color="success" small class="mt-2" @click="novoProduto">Novo Produto</v-btn>
             </v-col>
           </v-row>
 
           <v-data-table
             :headers="cabecalhoProduto"
-            :items="empresaSelecionada.produtos"
+            :items="novaEmpresa.produtos"
             sort-by="nome"
             class="elevation-1"
           >
@@ -222,18 +186,18 @@
               <v-icon
                 small
                 class="mr-2"
-                @click="abrirDIalog(item)"
+                @click="editarProduto(item)"
                 color="primary"
-                >mdi-pencil</v-icon
+                > mdi-pencil</v-icon
               >
               <v-icon
                 small
-                @click="ativarInativar(item)"
+                @click="ativarInativarProduto(item)"
                 v-if="item.ativo"
                 color="green"
                 >mdi-check-bold</v-icon
               >
-              <v-icon small @click="ativarInativar(item)" v-else color="red"
+              <v-icon small @click="ativarInativarProduto(item)" v-else color="red"
                 >mdi-cancel</v-icon
               >
             </template>
@@ -263,12 +227,14 @@
 
 <script>
 import transacoes from "../components/Transações";
+//import { config } from 'vue/types/umd';
 
 export default {
   components: {
     transacoes
   },
   data: () => ({
+    edicao: false,
     empresaSelecionada: {},
     cabecalhoEmpresas: [
       {
@@ -313,16 +279,16 @@ export default {
 
     isDialogOpen: false,
     novaEmpresa: {
-      id: "",
-      nome: "",
-      cnpj: "",
-      email: "",
-      status: true,
-      tel: "",
+      // id: "",
+      // nome: "",
+      // cnpj: "",
+      // email: "",
+      // status: true,
+      // tel: "",
       endereco: {
-        rua: "",
-        numero: "",
-        bairro: ""
+        // rua: "",
+        // numero: "",
+        // bairro: ""
       },
       produto: []
     },
@@ -351,16 +317,20 @@ export default {
       }
       for (let i = 0; i < this.empresas.length; i++) {
         if (this.empresas[i].nome == this.selectEmpresa) {
-          this.empresaSelecionada = this.empresas[i];
+          this.novaEmpresa = this.empresas[i];
         }
       }
     },
 
     openDialog(empresa) {
       this.isDialogOpen = !this.isDialogOpen;
+      
     },
 
     limparEFecharEmpresaNova() {
+      // this.novaEmpresa = {
+      //   endereco:{}
+      // }
       this.novaEmpresa.id = "";
       this.novaEmpresa.nome = "";
       this.novaEmpresa.cnpj = "";
@@ -369,7 +339,44 @@ export default {
       this.novaEmpresa.endereco.rua = "";
       this.novaEmpresa.endereco.numero = "";
       this.novaEmpresa.endereco.bairro = "";
+      this.novaEmpresa.produto  = [];
       this.isDialogOpen = false;
+      this.edicao = false;
+      //console.log(this.empresas)
+    },
+    editarEmpresa(empresa){
+      console.log(empresa)
+      this.edicao = true;
+      this.isDialogOpen = !this.isDialogOpen;
+      Object.assign(this.novaEmpresa, empresa);
+      //console.log("atribuido "+JSON.stringify(this.novaEmpresa))
+      //console.log(empresa)
+    },
+    atualizarEmpresa(){
+      console.log(this.novaEmpresa)
+        let achou = false;
+        let i = 0;
+        while(i < this.empresas.length && achou == false){
+          if(this.novaEmpresa.id == this.empresas[i].id){
+           // console.log(empresa)
+            Object.assign(this.empresas[i], this.novaEmpresa);
+            achou = true;
+            // this.isDialogOpen = false;
+            // this.edicao = false;
+           this.limparEFecharEmpresaNova();
+          }
+          i++
+        }
+        
+    },
+    editarProduto(produto){
+      alert(JSON.stringify(produto))
+    },
+    ativarInativarProduto(){
+      alert("ativarInativar")
+    },
+    novoProduto(){
+      alert("novoProduto")
     },
 
     initTransacoesDasEmpresas() {
