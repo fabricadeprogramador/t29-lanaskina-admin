@@ -160,6 +160,9 @@
           </v-toolbar-title>
         </v-toolbar>
       </template>
+      <template v-slot:no-data>
+              <v-card-text color="black">Nenhuma transação realizada</v-card-text>
+       </template>
     </v-data-table>
   </div>
 </template>

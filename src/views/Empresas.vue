@@ -96,7 +96,7 @@
     <!-- Fim msg de validação -->
 
     <!-- inicio select de empresa -->
-    <v-row class="mb-10">
+    <v-row class="mb-2 ma-5">
       <v-col cols="4" sm="3" class="ma-0 ml-4 pa-0">
         <v-select
           :items="empresas"
@@ -157,11 +157,16 @@
       <h1>Nenhuma empresa Selecionada</h1>
     </template>
   </v-data-table> -->
+    
 
       <v-card-text>
         <v-card elevation="5">
+          
           <v-card-title class="headline ">Dados da Empresa</v-card-title>
-          <v-row>
+           <v-card-text class="text-center" v-if="selectEmpresa ==''">         
+               Nenhuma empresa selecionada
+          </v-card-text>
+          <v-row v-else>
             <v-col cols="12" sm="3">
               <v-card-text>
                 <strong>Nome: </strong>
@@ -230,6 +235,11 @@
               >
               <v-icon small @click="ativarInativar(item)" v-else color="red"
                 >mdi-cancel</v-icon
+              >
+            </template>
+            <template v-slot:no-data>
+              <v-card-text color="black"
+                >Nenhuma produto cadastrado</v-card-text
               >
             </template>
           </v-data-table>
@@ -313,7 +323,8 @@ export default {
         rua: "",
         numero: "",
         bairro: ""
-      }
+      },
+      produto: []
     },
     empresas: [],
     geradorId: 6
@@ -324,7 +335,6 @@ export default {
 
   methods: {
     buscarTransacaoDaEmpresa() {
-      //alert(this.empresaSelecionada)
       if (this.selectEmpresa == "") {
         this.validacao = "Selecione uma empresa";
         return;
@@ -338,9 +348,9 @@ export default {
         if (this.transacoesGeral[i].empresa.nome == this.selectEmpresa) {
           this.transacoesPorEmpresa.push(this.transacoesGeral[i]);
         }
+      }
+      for (let i = 0; i < this.empresas.length; i++) {
         if (this.empresas[i].nome == this.selectEmpresa) {
-          // this.empresaSelecionada.push(this.empresas[i])
-          console.log(JSON.stringify(this.empresas[i]));
           this.empresaSelecionada = this.empresas[i];
         }
       }
@@ -386,7 +396,7 @@ export default {
             },
             {
               id: 1,
-              ativo: true,
+              ativo: false,
               nome: "Espetinho completo",
               descricao:
                 "Espetinho de carne,frango ou linguiça 100g com mandioca e vinagrete",
@@ -418,12 +428,14 @@ export default {
           produtos: [
             {
               id: 0,
+              ativo: true,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne ou frango ou linguiça 100g",
               valor: 8
             },
             {
               id: 1,
+              ativo: true,
               nome: "Espetinho completo",
               descricao:
                 "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
@@ -431,6 +443,7 @@ export default {
             },
             {
               id: 2,
+              ativo: true,
               nome: "Espetinho com mandioca",
               descricao:
                 "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
@@ -454,12 +467,14 @@ export default {
           produtos: [
             {
               id: 0,
+              ativo: true,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne ou frango ou linguiça 100g",
               valor: 8
             },
             {
               id: 1,
+              ativo: true,
               nome: "Espetinho completo",
               descricao:
                 "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
@@ -467,6 +482,7 @@ export default {
             },
             {
               id: 2,
+              ativo: false,
               nome: "Espetinho com mandioca",
               descricao:
                 "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
@@ -490,12 +506,14 @@ export default {
           produtos: [
             {
               id: 0,
+              ativo: true,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne ou frango ou linguiça 100g",
               valor: 8
             },
             {
               id: 1,
+              ativo: false,
               nome: "Espetinho completo",
               descricao:
                 "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
@@ -503,6 +521,7 @@ export default {
             },
             {
               id: 2,
+              ativo: true,
               nome: "Espetinho com mandioca",
               descricao:
                 "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
@@ -526,12 +545,14 @@ export default {
           produtos: [
             {
               id: 0,
+              ativo: false,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne ou frango ou linguiça 100g",
               valor: 8
             },
             {
               id: 1,
+              ativo: true,
               nome: "Espetinho completo",
               descricao:
                 "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
@@ -539,6 +560,7 @@ export default {
             },
             {
               id: 2,
+              ativo: true,
               nome: "Espetinho com mandioca",
               descricao:
                 "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
@@ -562,12 +584,14 @@ export default {
           produtos: [
             {
               id: 0,
+              ativo: true,
               nome: "Espetinho simples",
               descricao: "Espetinho de carne ou frango ou linguiça 100g",
               valor: 8
             },
             {
               id: 1,
+              ativo: true,
               nome: "Espetinho completo",
               descricao:
                 "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
@@ -575,6 +599,7 @@ export default {
             },
             {
               id: 2,
+              ativo: false,
               nome: "Espetinho com mandioca",
               descricao:
                 "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
@@ -837,8 +862,8 @@ export default {
       this.novaEmpresa.id = this.geradorId;
       this.geradorId++;
       var empresaSalvando = Object.assign({}, this.novaEmpresa);
+      //console.log('empresasalvando',empresaSalvando)
       this.empresas.push(empresaSalvando);
-      console.log(this.empresas);
       this.isDialogOpen = !this.isDialogOpen;
     }
   }
