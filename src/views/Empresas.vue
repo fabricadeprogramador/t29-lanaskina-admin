@@ -172,9 +172,55 @@
             </v-col>
 
             <v-col cols="12" sm="2" class="mt-2">
-              <v-btn color="success" small class="mt-2" @click="novoProduto">Novo Produto</v-btn>
+              <v-btn color="success" small class="mt-2" @click="clickNovoProduto">Novo Produto</v-btn>
             </v-col>
           </v-row>
+
+          <!-- Inicio Cadastro/Edição produtos -->
+          <template>
+           <v-row>
+             <v-dialog v-model= "isDialogProduto" max-width="600px">
+               <v-card>
+                 <v-card-title class="mb-0 pb-0">{{edicaoProduto?"Edição Produto":"Novo Produto"}}</v-card-title>
+                <v-card-text>
+                   <v-container>
+                   <v-row>
+                     <v-col cols="12" sm="8">
+                       <v-text-field
+                        label="Nome"
+                        hint="Nome do produto"
+                        v-model="novoProduto.nome">                         
+                       </v-text-field>
+                     </v-col>
+                      <v-col cols="12" sm="4">
+                       <v-text-field
+                        label="Valor"  
+                        type="number"                      
+                        hint="Valor do produto (R$)"
+                        v-model="novoProduto.valor">                         
+                       </v-text-field>
+                     </v-col>
+                   </v-row>
+                   <v-row>
+                     <v-col>
+                       <v-textarea                      
+                       label="Descrição do Produto"  
+                       hint="Informe os detalhes do produto"                     
+                      >                       
+                     </v-textarea>
+                     </v-col>
+                   </v-row>
+                   <v-row justify="center" class="mt-5">
+                     <v-btn  color="blue darken-1" text>Cancelar</v-btn>
+                     <v-btn  color="blue darken-1" text v-if="edicaoProduto">Atualizar</v-btn>
+                     <v-btn  color="blue darken-1" text v-else>Salvar</v-btn>
+                   </v-row>
+                 </v-container>
+                </v-card-text>
+               </v-card>
+             </v-dialog>
+           </v-row>
+          </template>
 
           <v-data-table
             :headers="cabecalhoProduto"
@@ -233,8 +279,10 @@ export default {
   components: {
     transacoes
   },
-  data: () => ({
+  data: () => ({    
+    edicaoProduto: false,
     edicao: false,
+    novoProduto: {},
     empresaSelecionada: {},
     cabecalhoEmpresas: [
       {
@@ -278,6 +326,7 @@ export default {
     transacoesPorEmpresa: [],
 
     isDialogOpen: false,
+    isDialogProduto: false,
     novaEmpresa: {
       // id: "",
       // nome: "",
@@ -293,7 +342,8 @@ export default {
       produto: []
     },
     empresas: [],
-    geradorId: 6
+    geradorId: 6,
+    
   }),
   created() {
     this.initTransacoesDasEmpresas();
@@ -324,6 +374,7 @@ export default {
 
     openDialog(empresa) {
       this.isDialogOpen = !this.isDialogOpen;
+      this.validacao = "";
       
     },
 
@@ -339,13 +390,16 @@ export default {
       this.novaEmpresa.endereco.rua = "";
       this.novaEmpresa.endereco.numero = "";
       this.novaEmpresa.endereco.bairro = "";
-      this.novaEmpresa.produto  = [];
+      this.novaEmpresa.produtos  = [];
       this.isDialogOpen = false;
       this.edicao = false;
       //console.log(this.empresas)
     },
     editarEmpresa(empresa){
-      console.log(empresa)
+     console.log(empresa.id, empresa.nome)
+     if((empresa.id === undefined || empresa.id === "") && (empresa.nome === undefined || empresa.nome === ""))return this.validacao = "Selecione uma empresa e click em 'Buscar'"
+
+      this.validacao = ""
       this.edicao = true;
       this.isDialogOpen = !this.isDialogOpen;
       Object.assign(this.novaEmpresa, empresa);
@@ -359,14 +413,18 @@ export default {
         while(i < this.empresas.length && achou == false){
           if(this.novaEmpresa.id == this.empresas[i].id){
            // console.log(empresa)
-            Object.assign(this.empresas[i], this.novaEmpresa);
+            this.empresas[i] = Object.assign({}, this.novaEmpresa);
             achou = true;
-            // this.isDialogOpen = false;
-            // this.edicao = false;
-           this.limparEFecharEmpresaNova();
+            this.isDialogOpen = false;
+            this.edicao = false;
+            this.novaEmpresa =  {
+              endereco:{},
+              produtos:[]
+            }
           }
           i++
         }
+       // this.limparEFecharEmpresaNova();
         
     },
     editarProduto(produto){
@@ -375,8 +433,8 @@ export default {
     ativarInativarProduto(){
       alert("ativarInativar")
     },
-    novoProduto(){
-      alert("novoProduto")
+    clickNovoProduto(){
+     this.isDialogProduto=true;
     },
 
     initTransacoesDasEmpresas() {
@@ -866,6 +924,7 @@ export default {
     },
 
     salvarNovaEmpresa() {
+    
       this.novaEmpresa.id = this.geradorId;
       this.geradorId++;
       var empresaSalvando = Object.assign({}, this.novaEmpresa);
