@@ -106,9 +106,9 @@
           label="Empresas"
           outlined
           item-text="nome"
-          item-value="nome"
-          v-model="selectEmpresa"
-          dense
+          item-value="id"
+          v-model="selectIdEmpresa"
+          dense          
         ></v-select>
       </v-col>
       <v-col cols="3" sm="3" class="ma-0 ml-4 pa-0">
@@ -127,7 +127,7 @@
         <v-card elevation="5">
           
           <v-card-title class="headline ">Dados da Empresa</v-card-title>
-           <v-card-text class="text-center" v-if="selectEmpresa ==''">         
+           <v-card-text class="text-center" v-if="selectIdEmpresa ===''">         
                Nenhuma empresa selecionada
           </v-card-text>
           <v-row v-else>
@@ -172,7 +172,7 @@
             </v-col>
 
             <v-col cols="12" sm="2" class="mt-2">
-              <v-btn :Disabled="selectEmpresa==''?true:false" color="success" small class="mt-2" @click="clickNovoProduto">Novo Produto</v-btn>
+              <v-btn :Disabled="selectIdEmpresa===''?true:false" color="success" small class="mt-2" @click="clickNovoProduto">Novo Produto</v-btn>
             </v-col>
           </v-row>
 
@@ -212,9 +212,9 @@
                      </v-col>
                    </v-row>
                    <v-row justify="center" class="mt-5">
-                     <v-btn  color="blue darken-1" text @click="cancelar">Cancelar</v-btn>
+                     <v-btn  color="blue darken-1" text @click="cancelarCadastroProduto">Cancelar</v-btn>
                      <v-btn  color="blue darken-1" text v-if="edicaoProduto">Atualizar</v-btn>
-                     <v-btn  color="blue darken-1" text v-else>Salvar</v-btn>
+                     <v-btn  color="blue darken-1" text v-else @click="salvarProduto(novoProduto)">Salvar</v-btn>
                    </v-row>
                  </v-container>
                 </v-card-text>
@@ -247,6 +247,11 @@
               <v-icon small @click="ativarInativarProduto(item)" v-else color="red"
                 >mdi-cancel</v-icon
               >
+            </template>
+            <template v-slot:item.valor="{ item }">
+              <span>
+                R$ {{item.valor.toFixed(2)}}
+              </span>
             </template>
             <template v-slot:no-data>
               <v-card-text color="black"
@@ -325,7 +330,7 @@ export default {
       }
     ],
     transacoesGeral: [],
-    selectEmpresa: "",
+    selectIdEmpresa: "",
     validacao: "",
     transacoesPorEmpresa: [],
 
@@ -354,8 +359,8 @@ export default {
   },
 
   methods: {
-    buscarTransacaoDaEmpresa() {
-      if (this.selectEmpresa == "") {
+    buscarTransacaoDaEmpresa() {      
+      if (this.selectIdEmpresa === "") {
         this.validacao = "Selecione uma empresa";
         return;
       }
@@ -365,13 +370,16 @@ export default {
       //this.empresaSelecionada.splice(0, this.empresaSelecionada.length);
 
       for (let i = 0; i < this.transacoesGeral.length; i++) {
-        if (this.transacoesGeral[i].empresa.nome == this.selectEmpresa) {
+        if (this.transacoesGeral[i].empresa.id == this.selectIdEmpresa) {
           this.transacoesPorEmpresa.push(this.transacoesGeral[i]);
         }
       }
       for (let i = 0; i < this.empresas.length; i++) {
-        if (this.empresas[i].nome == this.selectEmpresa) {
-          this.empresaSelecionada = Object.assign({}, this.empresas[i]);
+        if (this.empresas[i].id == this.selectIdEmpresa) { 
+          // Feito copia Completa         
+          this.empresaSelecionada = JSON.parse(JSON.stringify(this.empresas[i]))
+          //Assim faz copia rasa, nao faz copia do objeto do objeto
+          // Object.assign(this.empresaSelecionada, this.empresas[i]);
         }
       }
     },
@@ -411,10 +419,31 @@ export default {
       //console.log("atribuido "+JSON.stringify(this.novaEmpresa))
       //console.log(empresa)
     },
-    cancelar(){
+    cancelarCadastroProduto(){
       this.edicaoProduto= false;
       this.novoProduto = {};
       this.isDialogProduto= false;
+    },
+    arrendondarCasaDecimal(valor){
+      return valor.toFixed(2)
+    },
+    salvarProduto(produto){      
+      let idEmpresa = this.selectIdEmpresa;
+      let idProduto = "";
+      produto.valor = parseFloat(produto.valor)
+
+      // for para gerar um id de produto
+      for(let i = 0; i < this.empresas.length; i++) {
+        if(idEmpresa == this.empresas[i].id){
+          idProduto = this.empresas[i].produtos.length ;
+          this.novoProduto.id = idProduto;
+          this.novoProduto.ativo = true;
+          this.empresas[i].produtos.push(Object.assign({}, this.novoProduto));  
+          this.empresaSelecionada = JSON.parse(JSON.stringify(this.empresas[i]))        
+        break;
+        }
+      }
+      this.cancelarCadastroProduto();      
     },
     atualizarEmpresa(){
        
