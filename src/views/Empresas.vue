@@ -179,7 +179,7 @@
           <!-- Inicio Cadastro/Edição produtos -->
           <template>
            <v-row>
-             <v-dialog v-model= "isDialogProduto" max-width="600px">
+             <v-dialog v-model= "isDialogProduto" max-width="600px" persistent>
                <v-card>
                  <v-card-title class="mb-0 pb-0">{{edicaoProduto?"Edição Produto":"Novo Produto"}}</v-card-title>
                 <v-card-text>
@@ -213,7 +213,7 @@
                    </v-row>
                    <v-row justify="center" class="mt-5">
                      <v-btn  color="blue darken-1" text @click="cancelarCadastroProduto">Cancelar</v-btn>
-                     <v-btn  color="blue darken-1" text v-if="edicaoProduto">Atualizar</v-btn>
+                     <v-btn  color="blue darken-1" text v-if="edicaoProduto" @click="atualizarProduto">Atualizar</v-btn>
                      <v-btn  color="blue darken-1" text v-else @click="salvarProduto(novoProduto)">Salvar</v-btn>
                    </v-row>
                  </v-container>
@@ -418,33 +418,7 @@ export default {
       this.novaEmpresa = Object.assign({}, empresa);
       //console.log("atribuido "+JSON.stringify(this.novaEmpresa))
       //console.log(empresa)
-    },
-    cancelarCadastroProduto(){
-      this.edicaoProduto= false;
-      this.novoProduto = {};
-      this.isDialogProduto= false;
-    },
-    arrendondarCasaDecimal(valor){
-      return valor.toFixed(2)
-    },
-    salvarProduto(produto){      
-      let idEmpresa = this.selectIdEmpresa;
-      let idProduto = "";
-      produto.valor = parseFloat(produto.valor)
-
-      // for para gerar um id de produto
-      for(let i = 0; i < this.empresas.length; i++) {
-        if(idEmpresa == this.empresas[i].id){
-          idProduto = this.empresas[i].produtos.length ;
-          this.novoProduto.id = idProduto;
-          this.novoProduto.ativo = true;
-          this.empresas[i].produtos.push(Object.assign({}, this.novoProduto));  
-          this.empresaSelecionada = JSON.parse(JSON.stringify(this.empresas[i]))        
-        break;
-        }
-      }
-      this.cancelarCadastroProduto();      
-    },
+    },    
     atualizarEmpresa(){
        
         let achou = false;
@@ -469,8 +443,58 @@ export default {
        // this.limparEFecharEmpresaNova();
         
     },
+    cancelarCadastroProduto(){
+      this.edicaoProduto= false;
+      this.novoProduto = {};
+      this.isDialogProduto= false;
+    },    
+    salvarProduto(produto){      
+      let idEmpresa = this.selectIdEmpresa;
+      let idProduto = "";
+      produto.valor = parseFloat(produto.valor)
+
+      // for para gerar um id de produto
+      for(let i = 0; i < this.empresas.length; i++) {
+        if(idEmpresa == this.empresas[i].id){
+          idProduto = this.empresas[i].produtos.length ;
+          this.novoProduto.id = idProduto;
+          this.novoProduto.ativo = true;
+          this.empresas[i].produtos.push(Object.assign({}, this.novoProduto));  
+          this.empresaSelecionada = JSON.parse(JSON.stringify(this.empresas[i]))        
+        break;
+        }
+      }
+      this.cancelarCadastroProduto();      
+    },
     editarProduto(produto){
-      alert(JSON.stringify(produto))
+      //alert(JSON.stringify(produto))
+      this.isDialogProduto=true;
+      this.edicaoProduto = true;
+      this.novoProduto = Object.assign({}, produto)
+    },
+    atualizarProduto(){
+     let idEmpresa = this.selectIdEmpresa;
+     let idProduto = this.novoProduto.id;
+
+    //  convertendo para number pois vem string, para funcionar o toFixed
+     this.novoProduto.valor = parseFloat(this.novoProduto.valor);
+
+      // for para achar a empresa
+     for (let i = 0; i < this.empresas.length; i++) {
+       if(this.empresas[i].id === idEmpresa){
+        
+        //  for para depois que achar a empresa, achar a posição do produto
+         for (let p = 0; p < this.empresas[i].produtos.length; p++) {           
+           if(this.empresas[i].produtos[p].id === idProduto ){             
+             this.empresas[i].produtos[p] = Object.assign({}, this.novoProduto);
+             this.empresaSelecionada = JSON.parse(JSON.stringify(this.empresas[i]));
+             break;
+           }                     
+         }
+         this.cancelarCadastroProduto();
+         break; 
+       }       
+     }
     },
     ativarInativarProduto(){
       alert("ativarInativar")
