@@ -496,8 +496,28 @@ export default {
        }       
      }
     },
-    ativarInativarProduto(){
-      alert("ativarInativar")
+    ativarInativarProduto(produto){
+      //alert(JSON.stringify(produto))
+      let idEmpresa = this.selectIdEmpresa;
+
+      for (let i = 0; i < this.empresas.length; i++) {
+        // achar empresa
+        if(idEmpresa == this.empresas[i].id){
+
+          // achar o produto dentro da empresa
+          for (let p = 0; p < this.empresas[i].produtos.length; p++) {
+            if(produto.id == this.empresas[i].produtos[p].id ){
+              //alert(JSON.stringify(this.empresas[i].produtos[p].id))
+              this.empresas[i].produtos[p].ativo = !this.empresas[i].produtos[p].ativo;
+              this.empresaSelecionada = JSON.parse(JSON.stringify(this.empresas[i]));
+              break;
+            }  
+          }
+          break;
+        }
+        
+      }
+     
     },
     clickNovoProduto(){
      this.isDialogProduto=true;
