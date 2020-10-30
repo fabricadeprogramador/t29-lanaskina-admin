@@ -3,8 +3,8 @@
     <!-- inicio dialog nova empresa -->
     <template>
       <v-row justify="center">
-        <v-dialog v-model="isDialogOpen" max-width="600px">
-          <!-- <v-dialog v-model="isDialogOpen" persistent max-width="600px"> -->
+        <v-dialog v-model="isDialogEmpresa" persistent max-width="600px">
+          <!-- <v-dialog v-model="isDialogEmpresa" persistent max-width="600px"> -->
           <v-card>
             <v-card-title>
               <span class="headline">{{
@@ -18,49 +18,49 @@
                     <v-text-field
                       label="Nome da Empresa*"
                       required
-                      v-model="novaEmpresa.nome"
+                      v-model="novaOuEdicaoEmpresa.nome"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       label="CNPJ"
                       hint="CNPJ da empresa"
-                      v-model="novaEmpresa.cnpj"
+                      v-model="novaOuEdicaoEmpresa.cnpj"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       label="Email"
                       hint="Email da empresa"
-                      v-model="novaEmpresa.email"
+                      v-model="novaOuEdicaoEmpresa.email"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       label="Tel"
                       hint="Número Telefônico da Empresa"
-                      v-model="novaEmpresa.tel"
+                      v-model="novaOuEdicaoEmpresa.tel"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       label="Rua"
                       hint="Logradouro"
-                      v-model="novaEmpresa.endereco.rua"
+                      v-model="novaOuEdicaoEmpresa.endereco.rua"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       label="Número"
                       hint="Número da Sede"
-                      v-model="novaEmpresa.endereco.numero"
+                      v-model="novaOuEdicaoEmpresa.endereco.numero"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       label="Bairro"
                       hint="Bairro onde se encontra a empresa"
-                      v-model="novaEmpresa.endereco.bairro"
+                      v-model="novaOuEdicaoEmpresa.endereco.bairro"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -73,7 +73,7 @@
                 color="blue darken-1"
                 text
                 @click="limparEFecharEmpresaNova"
-                >Fechar</v-btn
+                >Cancelar</v-btn
               >
               <v-btn
                 v-if="edicao"
@@ -86,7 +86,7 @@
                 v-else
                 color="blue darken-1"
                 text
-                @click="salvarNovaEmpresa"
+                @click="salvarnovaOuEdicaoEmpresa"
                 >Salvar</v-btn
               >
             </v-card-actions>
@@ -112,21 +112,21 @@
     <v-row class="mb-2 ma-5">
       <v-col cols="4" sm="3" class="ma-0 ml-4 pa-0">
         <v-select
-          :items="empresas"
+          :items="nomesEmpresas"
           label="Empresas"
           outlined
           item-text="nome"
-          item-value="id"
+          item-value="_id"
           v-model="selectIdEmpresa"
           dense
         ></v-select>
       </v-col>
       <v-col cols="3" sm="3" class="ma-0 ml-4 pa-0">
-        <v-btn color="green" @click="buscarTransacaoDaEmpresa">Buscar</v-btn>
+        <v-btn color="green" @click="buscarDadosEmpresa">Buscar</v-btn>
       </v-col>
       <v-spacer></v-spacer>
       <v-col cols="3" sm="3" class="ma-0 pa-0">
-        <v-btn color="success" @click="openDialog()">Nova Empresa</v-btn>
+        <v-btn color="success" @click="isDialogEmpresa = !isDialogEmpresa">Nova Empresa</v-btn>
       </v-col>
     </v-row>
     <!-- fim select empresa -->
@@ -136,39 +136,40 @@
       <v-card-text>
         <v-card elevation="5">
           <v-card-title class="headline ">Dados da Empresa</v-card-title>
-          <v-card-text class="text-center" v-if="selectIdEmpresa === ''">
+          <v-card-text class="text-center" v-if="empresa.nome == undefined">
             Nenhuma empresa selecionada
           </v-card-text>
           <v-row v-else>
             <v-col cols="12" sm="3">
               <v-card-text>
                 <strong>Nome: </strong>
-                {{ empresaSelecionada.nome }}</v-card-text
+                {{ empresa.nome }}</v-card-text
               >
             </v-col>
             <v-col cols="12" sm="2">
               <v-card-text>
-                <strong>Cnpj: </strong>{{ novaEmpresa.cnpj }}</v-card-text
+                <strong>Cnpj: </strong>{{ empresa.cnpj }}</v-card-text
               >
             </v-col>
             <v-col cols="12" sm="3">
               <v-card-text>
                 <strong>Contato: </strong>
-                {{ empresaSelecionada.tel }}</v-card-text
+                {{ empresa.tel }}</v-card-text
               >
             </v-col>
-            <v-col cols="12" sm="2">
-              <v-card-text v-if="empresaSelecionada.status != null">
-                <strong>Status: </strong
-                >{{ novaEmpresa.status ? "Ativo" : "Inativo" }}</v-card-text
+            <v-col cols="12" sm="2" >
+              <v-card-text>
+              <strong>Status: </strong
+                >{{ empresa.status ? "Ativo" : "Inativo" }}</v-card-text
               >
+              
             </v-col>
             <v-col cols="12" sm="2">
               <v-btn
                 small
                 color="warning"
                 class="mt-2"
-                @click="editarEmpresa(novaEmpresa)"
+                @click="editarEmpresa()"
                 >Editar
               </v-btn>
             </v-col>
@@ -184,12 +185,12 @@
             </v-col>
 
             <v-col cols="12" sm="2" class="mt-2">
-              <v-btn
-                :Disabled="selectIdEmpresa === '' ? true : false"
+              <v-btn                 
+                :Disabled="empresa.nome === undefined ? true : false" 
                 color="success"
                 small
                 class="mt-2"
-                @click="clickNovoProduto"
+                @click="isDialogProduto=!isDialogProduto"
                 >Novo Produto</v-btn
               >
             </v-col>
@@ -201,7 +202,7 @@
               <v-dialog v-model="isDialogProduto" max-width="600px" persistent>
                 <v-card>
                   <v-card-title class="mb-0 pb-0">{{
-                    edicaoProduto ? "Edição Produto" : "Novo Produto"
+                    edicao ? "Edição Produto" : "Novo Produto"
                   }}</v-card-title>
                   <v-card-text>
                     <v-container>
@@ -210,7 +211,7 @@
                           <v-text-field
                             label="Nome"
                             hint="Nome do produto"
-                            v-model="novoProduto.nome"
+                            v-model="novoOuEdicaoProduto.nome"
                           >
                           </v-text-field>
                         </v-col>
@@ -219,7 +220,7 @@
                             label="Valor"
                             type="number"
                             hint="Valor do produto (R$)"
-                            v-model="novoProduto.valor"
+                            v-model="novoOuEdicaoProduto.valor"
                           >
                           </v-text-field>
                         </v-col>
@@ -227,7 +228,7 @@
                       <v-row>
                         <v-col>
                           <v-textarea
-                            v-model="novoProduto.descricao"
+                            v-model="novoOuEdicaoProduto.descricao"
                             label="Descrição do Produto"
                             hint="Informe os detalhes do produto"
                           >
@@ -244,7 +245,7 @@
                         <v-btn
                           color="blue darken-1"
                           text
-                          v-if="edicaoProduto"
+                          v-if="edicao"
                           @click="atualizarProduto"
                           >Atualizar</v-btn
                         >
@@ -252,7 +253,7 @@
                           color="blue darken-1"
                           text
                           v-else
-                          @click="salvarProduto(novoProduto)"
+                          @click="salvarProduto()"
                           >Salvar</v-btn
                         >
                       </v-row>
@@ -265,7 +266,7 @@
 
           <v-data-table
             :headers="cabecalhoProduto"
-            :items="empresaSelecionada.produtos"
+            :items="empresa.produtos"
             sort-by="nome"
             class="elevation-1"
           >
@@ -317,6 +318,7 @@
 
 <script>
 import transacoes from "../components/Transações";
+import EmpresaHttp from "@/http/EmpresaHttp"
 //import { config } from 'vue/types/umd';
 
 export default {
@@ -324,13 +326,6 @@ export default {
     transacoes,
   },
   data: () => ({
-    edicaoProduto: false,
-    edicao: false,
-    novoProduto: {},
-    empresaSelecionada: {
-      endereco: {},
-      produtos: [],
-    },
     cabecalhoEmpresas: [
       {
         text: "Nome",
@@ -366,37 +361,40 @@ export default {
         text: "Ação",
         value: "acao",
       },
-    ],
+    ],  
+    empresa:{},
+    empresaSelecionada: {
+      endereco: {},
+      produtos: [],
+    },
     transacoesGeral: [],
     selectIdEmpresa: "",
     validacao: "",
     transacoesPorEmpresa: [],
-
-    isDialogOpen: false,
+    isDialogEmpresa: false,
     isDialogProduto: false,
-    novaEmpresa: {
-      // id: "",
-      // nome: "",
-      // cnpj: "",
-      // email: "",
-      // status: true,
-      // tel: "",
-      endereco: {
-        // rua: "",
-        // numero: "",
-        // bairro: ""
+    edicao: false,
+    novoOuEdicaoProduto: {},
+    novaOuEdicaoEmpresa: {      
+      endereco: {       
       },
       produto: [],
     },
-    empresas: [],
-    geradorId: 6,
+    nomesEmpresas: [],    
   }),
   created() {
-    this.initTransacoesDasEmpresas();
+    this.buscarNomesDasEmpresas();
   },
 
   methods: {
-    buscarTransacaoDaEmpresa() {
+    async buscarNomesDasEmpresas() {
+
+     let resposta = await EmpresaHttp.buscarTodosNomes()     
+     if(resposta.status === 200){
+       this.nomesEmpresas = resposta.data
+     }     
+    },
+    async buscarDadosEmpresa() {
       if (this.selectIdEmpresa === "") {
         this.validacao = "Selecione uma empresa";
         return;
@@ -404,87 +402,39 @@ export default {
       this.validacao = "";
 
       this.transacoesPorEmpresa.splice(0, this.transacoesPorEmpresa.length);
-      //this.empresaSelecionada.splice(0, this.empresaSelecionada.length);
+      let empresa = await EmpresaHttp.buscaPorId(this.selectIdEmpresa)
 
-      for (let i = 0; i < this.transacoesGeral.length; i++) {
-        if (this.transacoesGeral[i].empresa.id == this.selectIdEmpresa) {
-          this.transacoesPorEmpresa.push(this.transacoesGeral[i]);
-        }
-      }
-      for (let i = 0; i < this.empresas.length; i++) {
-        if (this.empresas[i].id == this.selectIdEmpresa) {
-          // Feito copia Completa
-          this.empresaSelecionada = JSON.parse(
-            JSON.stringify(this.empresas[i])
-          );
-          //Assim faz copia rasa, nao faz copia do objeto do objeto
-          // Object.assign(this.empresaSelecionada, this.empresas[i]);
-        }
+      if( empresa.status === 200){
+        this.empresa = empresa.data;
+        this.empresaSelecionada = empresa.data
       }
     },
-
-    openDialog(empresa) {
-      this.limparEFecharEmpresaNova();
-      this.isDialogOpen = !this.isDialogOpen;
-      this.validacao = "";
-    },
-
     limparEFecharEmpresaNova() {
-      // this.novaEmpresa = {
-      //   endereco:{}
-      // }
-      this.novaEmpresa.id = "";
-      this.novaEmpresa.nome = "";
-      this.novaEmpresa.cnpj = "";
-      this.novaEmpresa.email = "";
-      this.novaEmpresa.tel = "";
-      this.novaEmpresa.endereco.rua = "";
-      this.novaEmpresa.endereco.numero = "";
-      this.novaEmpresa.endereco.bairro = "";
-      this.novaEmpresa.produtos = [];
-      this.isDialogOpen = false;
+      this.novaOuEdicaoEmpresa = {
+        endereco:{},
+        produtos:[]
+      }      
+      this.isDialogEmpresa = false;
       this.edicao = false;
-      //console.log(this.empresas)
+      
     },
-    editarEmpresa(empresa) {
-      //console.log(empresa)
-      if (
-        (empresa.id === undefined || empresa.id === "") &&
-        (empresa.nome === undefined || empresa.nome === "")
-      )
-        return (this.validacao = "Selecione uma empresa e click em 'Buscar'");
-
-      this.validacao = "";
+    editarEmpresa() {
+     
       this.edicao = true;
-      this.isDialogOpen = !this.isDialogOpen;
-      this.novaEmpresa = Object.assign({}, empresa);
-      //console.log("atribuido "+JSON.stringify(this.novaEmpresa))
-      //console.log(empresa)
+      this.isDialogEmpresa = true;
+      this.novaOuEdicaoEmpresa = JSON.parse(JSON.stringify(this.empresa))
+            
     },
-    atualizarEmpresa() {
-      let achou = false;
-      let i = 0;
-      while (i < this.empresas.length && achou == false) {
-        if (this.novaEmpresa.id == this.empresas[i].id) {
-          // console.log(empresa)
-          Object.assign(this.empresas[i], this.novaEmpresa);
-          console.log("empresas", this.empresas);
-          achou = true;
-          this.empresaSelecionada = this.novaEmpresa;
-          this.isDialogOpen = false;
-          this.edicao = false;
-          this.novaEmpresa = {
-            endereco: {},
-            produtos: [],
-          };
-        }
-        i++;
-      }
-      // this.limparEFecharEmpresaNova();
+    async atualizarEmpresa() {     
+
+      let resposta = await EmpresaHttp.editar(this.selectIdEmpresa, this.novaOuEdicaoEmpresa);
+      this.empresa = resposta.data;
+      this.buscarNomesDasEmpresas();
+      this.limparEFecharEmpresaNova();
     },
     cancelarCadastroProduto() {
-      this.edicaoProduto = false;
-      this.novoProduto = {};
+      this.edicao = false;
+      this.novoOuEdicaoProduto = {};
       this.isDialogProduto = false;
     },
     salvarProduto(produto) {
@@ -496,9 +446,9 @@ export default {
       for (let i = 0; i < this.empresas.length; i++) {
         if (idEmpresa == this.empresas[i].id) {
           idProduto = this.empresas[i].produtos.length;
-          this.novoProduto.id = idProduto;
-          this.novoProduto.ativo = true;
-          this.empresas[i].produtos.push(Object.assign({}, this.novoProduto));
+          this.novoOuEdicaoProduto.id = idProduto;
+          this.novoOuEdicaoProduto.ativo = true;
+          this.empresas[i].produtos.push(Object.assign({}, this.novoOuEdicaoProduto));
           this.empresaSelecionada = JSON.parse(
             JSON.stringify(this.empresas[i])
           );
@@ -510,15 +460,15 @@ export default {
     editarProduto(produto) {
       //alert(JSON.stringify(produto))
       this.isDialogProduto = true;
-      this.edicaoProduto = true;
-      this.novoProduto = Object.assign({}, produto);
+      this.edicao = true;
+      this.novoOuEdicaoProduto = Object.assign({}, produto);
     },
     atualizarProduto() {
       let idEmpresa = this.selectIdEmpresa;
-      let idProduto = this.novoProduto.id;
+      let idProduto = this.novoOuEdicaoProduto.id;
 
       //  convertendo para number pois vem string, para funcionar o toFixed
-      this.novoProduto.valor = parseFloat(this.novoProduto.valor);
+      this.novoOuEdicaoProduto.valor = parseFloat(this.novoOuEdicaoProduto.valor);
 
       // for para achar a empresa
       for (let i = 0; i < this.empresas.length; i++) {
@@ -528,7 +478,7 @@ export default {
             if (this.empresas[i].produtos[p].id === idProduto) {
               this.empresas[i].produtos[p] = Object.assign(
                 {},
-                this.novoProduto
+                this.novoOuEdicaoProduto
               );
               this.empresaSelecionada = JSON.parse(
                 JSON.stringify(this.empresas[i])
@@ -563,504 +513,14 @@ export default {
           break;
         }
       }
-    },
-    clickNovoProduto() {
-      this.isDialogProduto = true;
-    },
-
-    initTransacoesDasEmpresas() {
-      this.empresas = [
-        {
-          id: 0,
-          nome: "Petisco de Gato",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: false,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
-          produtos: [
-            {
-              id: 0,
-              ativo: true,
-              nome: "Espetinho simples",
-              descricao: "Espetinho de carne,frango ou linguiça 100g",
-              valor: 8,
-            },
-            {
-              id: 1,
-              ativo: false,
-              nome: "Espetinho completo",
-              descricao:
-                "Espetinho de carne,frango ou linguiça 100g com mandioca e vinagrete",
-              valor: 18,
-            },
-            {
-              id: 2,
-              ativo: true,
-              nome: "Espetinho com mandioca",
-              descricao:
-                "Espetinho de carne,frango ou linguiça 100g com mandioca ",
-              valor: 12,
-            },
-          ],
-        },
-
-        {
-          id: 1,
-          nome: "Espetinho João",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
-          produtos: [
-            {
-              id: 0,
-              ativo: true,
-              nome: "Espetinho simples",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g",
-              valor: 8,
-            },
-            {
-              id: 1,
-              ativo: true,
-              nome: "Espetinho completo",
-              descricao:
-                "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
-              valor: 18,
-            },
-            {
-              id: 2,
-              ativo: true,
-              nome: "Espetinho com mandioca",
-              descricao:
-                "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
-              valor: 12,
-            },
-          ],
-        },
-
-        {
-          id: 2,
-          nome: "Masseria Fradelli",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
-          produtos: [
-            {
-              id: 0,
-              ativo: true,
-              nome: "Espetinho simples",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g",
-              valor: 8,
-            },
-            {
-              id: 1,
-              ativo: true,
-              nome: "Espetinho completo",
-              descricao:
-                "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
-              valor: 18,
-            },
-            {
-              id: 2,
-              ativo: false,
-              nome: "Espetinho com mandioca",
-              descricao:
-                "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
-              valor: 12,
-            },
-          ],
-        },
-
-        {
-          id: 3,
-          nome: "Feijoca do Zé",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
-          produtos: [
-            {
-              id: 0,
-              ativo: true,
-              nome: "Espetinho simples",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g",
-              valor: 8,
-            },
-            {
-              id: 1,
-              ativo: false,
-              nome: "Espetinho completo",
-              descricao:
-                "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
-              valor: 18,
-            },
-            {
-              id: 2,
-              ativo: true,
-              nome: "Espetinho com mandioca",
-              descricao:
-                "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
-              valor: 12,
-            },
-          ],
-        },
-
-        {
-          id: 4,
-          nome: "Tapiocaria Plinio",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
-          produtos: [
-            {
-              id: 0,
-              ativo: false,
-              nome: "Espetinho simples",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g",
-              valor: 8,
-            },
-            {
-              id: 1,
-              ativo: true,
-              nome: "Espetinho completo",
-              descricao:
-                "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
-              valor: 18,
-            },
-            {
-              id: 2,
-              ativo: true,
-              nome: "Espetinho com mandioca",
-              descricao:
-                "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
-              valor: 12,
-            },
-          ],
-        },
-
-        {
-          id: 5,
-          nome: "Bar do Almeida",
-          cnpj: "001.002.003",
-          email: "lalala@gmail.com",
-          status: true,
-          tel: "67981234567",
-          endereco: {
-            rua: "Esquina do gato",
-            numero: 15,
-            bairro: "Gato Preto",
-          },
-          produtos: [
-            {
-              id: 0,
-              ativo: true,
-              nome: "Espetinho simples",
-              descricao: "Espetinho de carne ou frango ou linguiça 100g",
-              valor: 8,
-            },
-            {
-              id: 1,
-              ativo: true,
-              nome: "Espetinho completo",
-              descricao:
-                "Espetinho de carne ou frango ou linguiça 100g com mandioca e vinagrete",
-              valor: 18,
-            },
-            {
-              id: 2,
-              ativo: false,
-              nome: "Espetinho com mandioca",
-              descricao:
-                "Espetinho de carne ou frango ou linguiça 100g com mandioca ",
-              valor: 12,
-            },
-          ],
-        },
-      ];
-
-      this.transacoesGeral = [
-        {
-          id: 0,
-          ativo: true,
-          cliente: {
-            id: 0,
-            nome: "Carlos Francisco Chaves",
-            username: "jao01",
-            senha: "123",
-            role: "ADMIN",
-            ativo: false,
-          },
-          idTransacoes: 0,
-          dataTransacoes: "11/01/2020",
-          valor: 48.5,
-          empresa: {
-            id: 0,
-            nome: "Petisco de Gato",
-            cnpj: "001.002.003",
-            email: "lalala@gmail.com",
-            status: true,
-            tel: "67981234567",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
-          },
-          produtos: [
-            {
-              id: 0,
-              nome: "Espetinho Simples",
-              valor: 8.0,
-            },
-            {
-              id: 1,
-              nome: "Espetinho com mandioca",
-              valor: 10.5,
-            },
-            {
-              id: 1,
-              nome: "Espetinho com Completo",
-              valor: 30.0,
-            },
-          ],
-          status: "Concluido",
-        },
-        {
-          id: 1,
-          ativo: false,
-          cliente: {
-            id: 1,
-            nome: "Maria da Silva",
-            username: "mariaa",
-            senha: "123",
-            role: "ADMIN",
-            ativo: true,
-          },
-          idTransacoes: 1,
-          dataTransacoes: "11/01/2020",
-          valor: 100.3456,
-          empresa: {
-            id: 1,
-            nome: "Espetinho João",
-            cnpj: "001.002.003",
-            email: "lalala@gmail.com",
-            status: true,
-            tel: "67981234567",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
-          },
-          produtos: [
-            {
-              id: 0,
-              nome: "Espetinho Completo",
-              valor: 50.0324,
-            },
-            {
-              id: 1,
-              nome: "Espetinho com mandioca",
-              valor: 50.3,
-            },
-          ],
-          status: "Aberto",
-        },
-        {
-          id: 2,
-          ativo: true,
-          cliente: {
-            id: 2,
-            nome: "Jão da Silva",
-            username: "jao01",
-            senha: "123",
-            role: "ADMIN",
-            ativo: true,
-          },
-          idTransacoes: 2,
-          dataTransacoes: "11/01/2020",
-          valor: 22.5,
-          empresa: {
-            id: 2,
-            nome: "Masseria Fradelli",
-            cnpj: "001.002.003",
-            email: "lalala@gmail.com",
-            status: true,
-            tel: "67981234567",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
-          },
-          produtos: [
-            {
-              id: 0,
-              nome: "Espetinho simples",
-              valor: 12.0,
-            },
-            {
-              id: 1,
-              nome: "Espetinho com mandioca",
-              valor: 10.5,
-            },
-          ],
-          status: "Cancelado",
-        },
-        {
-          id: 3,
-          ativo: true,
-          cliente: {
-            id: 3,
-            nome: "Jão Pedro Souza",
-            username: "jao01",
-            senha: "123",
-            role: "ADMIN",
-            ativo: true,
-          },
-          dataTransacoes: "11/01/2020",
-          valor: 100,
-          empresa: {
-            id: 3,
-            nome: "Feijoca do Zé",
-            cnpj: "001.002.003",
-            email: "lalala@gmail.com",
-            status: true,
-            tel: "67981234567",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
-          },
-          produtos: [
-            {
-              id: 0,
-              nome: "Espetinho Completo",
-              valor: 60.0,
-            },
-            {
-              id: 1,
-              nome: "Espetinho com mandioca",
-              valor: 40.0,
-            },
-          ],
-          status: "Concluido",
-        },
-        {
-          id: 4,
-          ativo: true,
-          cliente: {
-            id: 4,
-            nome: "Amarildo Duarte",
-            username: "jao01",
-            senha: "123",
-            role: "ADMIN",
-            ativo: false,
-          },
-          idTransacoes: 3,
-          dataTransacoes: "11/01/2020",
-          valor: 48.5,
-          empresa: {
-            id: 4,
-            nome: "Tapiocaria Plinio",
-            cnpj: "001.002.003",
-            email: "lalala@gmail.com",
-            status: true,
-            tel: "67981234567",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
-          },
-          produtos: [
-            {
-              id: 0,
-              nome: "Espetinho Completo",
-              valor: 48.5,
-            },
-          ],
-          status: "Concluido",
-        },
-        {
-          id: 5,
-          ativo: false,
-          cliente: {
-            id: 5,
-            nome: "Silvana da Costa",
-            username: "jao01",
-            senha: "123",
-            role: "ADMIN",
-            ativo: false,
-          },
-          idTransacoes: 4,
-          dataTransacoes: "11/01/2020",
-          valor: 100,
-          empresa: {
-            id: 5,
-            nome: "Bar do Almeida",
-            cnpj: "001.002.003",
-            email: "lalala@gmail.com",
-            status: true,
-            tel: "67981234567",
-            endereco: {
-              rua: "Esquina do gato",
-              numero: 15,
-              bairro: "Gato Preto",
-            },
-          },
-          produtos: [
-            {
-              id: 0,
-              nome: "Espetinho Completo",
-              valor: 75.5,
-            },
-            {
-              id: 1,
-              nome: "Espetinho com mandioca",
-              valor: 24.5,
-            },
-          ],
-          status: "Aberto",
-        },
-      ];
-    },
-
-    salvarNovaEmpresa() {
-      this.novaEmpresa.id = this.geradorId;
+    },    
+    salvarnovaOuEdicaoEmpresa() {
+      this.novaOuEdicaoEmpresa.id = this.geradorId;
       this.geradorId++;
-      var empresaSalvando = Object.assign({}, this.novaEmpresa);
-      //console.log('empresasalvando',empresaSalvando)
+      var empresaSalvando = Object.assign({}, this.novaOuEdicaoEmpresa);
+      
       this.empresas.push(empresaSalvando);
-      this.isDialogOpen = !this.isDialogOpen;
+      this.isDialogEmpresa = !this.isDialogEmpresa;
     },
   },
 };
