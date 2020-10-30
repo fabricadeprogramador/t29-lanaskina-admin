@@ -14,5 +14,8 @@ export default {
     },
     async editar(id, empresa){
         return   axios.put(`${API_HOST}/${id}`, empresa).then((resposta)=> resposta )
+    },
+    async adicionar(empresa){
+        return   axios.post(`${API_HOST}`, empresa).then((resposta)=> resposta )
     }
 }

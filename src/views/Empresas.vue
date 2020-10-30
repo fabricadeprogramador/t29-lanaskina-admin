@@ -5,7 +5,17 @@
       <v-row justify="center">
         <v-dialog v-model="isDialogEmpresa" persistent max-width="600px">
           <!-- <v-dialog v-model="isDialogEmpresa" persistent max-width="600px"> -->
+
           <v-card>
+            <v-row justify="center">
+              <v-col sm="9">
+                <v-slide-y-transition leave-absolute>
+                  <v-alert class="mt-3" type="warning" v-if="validacaoDialog != ''">{{
+                    validacaoDialog
+                  }}</v-alert>
+                </v-slide-y-transition>
+              </v-col>
+            </v-row>
             <v-card-title>
               <span class="headline">{{
                 edicao ? "Edição Empresa" : "Nova Empresa"
@@ -82,11 +92,7 @@
                 @click="atualizarEmpresa"
                 >Atualizar</v-btn
               >
-              <v-btn
-                v-else
-                color="blue darken-1"
-                text
-                @click="salvarnovaOuEdicaoEmpresa"
+              <v-btn v-else color="blue darken-1" text @click="salvarEmpresa"
                 >Salvar</v-btn
               >
             </v-card-actions>
@@ -126,7 +132,9 @@
       </v-col>
       <v-spacer></v-spacer>
       <v-col cols="3" sm="3" class="ma-0 pa-0">
-        <v-btn color="success" @click="isDialogEmpresa = !isDialogEmpresa">Nova Empresa</v-btn>
+        <v-btn color="success" @click="isDialogEmpresa = !isDialogEmpresa"
+          >Nova Empresa</v-btn
+        >
       </v-col>
     </v-row>
     <!-- fim select empresa -->
@@ -157,19 +165,14 @@
                 {{ empresa.tel }}</v-card-text
               >
             </v-col>
-            <v-col cols="12" sm="2" >
+            <v-col cols="12" sm="2">
               <v-card-text>
-              <strong>Status: </strong
+                <strong>Status: </strong
                 >{{ empresa.status ? "Ativo" : "Inativo" }}</v-card-text
               >
-              
             </v-col>
             <v-col cols="12" sm="2">
-              <v-btn
-                small
-                color="warning"
-                class="mt-2"
-                @click="editarEmpresa()"
+              <v-btn small color="warning" class="mt-2" @click="editarEmpresa()"
                 >Editar
               </v-btn>
             </v-col>
@@ -185,12 +188,12 @@
             </v-col>
 
             <v-col cols="12" sm="2" class="mt-2">
-              <v-btn                 
-                :Disabled="empresa.nome === undefined ? true : false" 
+              <v-btn
+                :Disabled="empresa.nome === undefined ? true : false"
                 color="success"
                 small
                 class="mt-2"
-                @click="isDialogProduto=!isDialogProduto"
+                @click="isDialogProduto = !isDialogProduto"
                 >Novo Produto</v-btn
               >
             </v-col>
@@ -318,69 +321,69 @@
 
 <script>
 import transacoes from "../components/Transações";
-import EmpresaHttp from "@/http/EmpresaHttp"
+import EmpresaHttp from "@/http/EmpresaHttp";
 //import { config } from 'vue/types/umd';
 
 export default {
   components: {
-    transacoes,
+    transacoes
   },
   data: () => ({
     cabecalhoEmpresas: [
       {
         text: "Nome",
-        value: "nome",
+        value: "nome"
       },
       {
         text: "Contato",
-        value: "tel",
+        value: "tel"
       },
       {
         text: "Cnpj",
-        value: "cnpj",
+        value: "cnpj"
       },
       {
         text: "Ações",
-        value: "acoes",
-      },
+        value: "acoes"
+      }
     ],
     cabecalhoProduto: [
       {
         text: "Nome",
-        value: "nome",
+        value: "nome"
       },
       {
         text: "Descrição",
-        value: "descricao",
+        value: "descricao"
       },
       {
         text: "Valor",
-        value: "valor",
+        value: "valor"
       },
       {
         text: "Ação",
-        value: "acao",
-      },
-    ],  
-    empresa:{},
+        value: "acao"
+      }
+    ],
+    empresa: {},
     empresaSelecionada: {
       endereco: {},
-      produtos: [],
+      produtos: []
     },
     transacoesGeral: [],
     selectIdEmpresa: "",
     validacao: "",
+    validacaoDialog: "",
     transacoesPorEmpresa: [],
     isDialogEmpresa: false,
     isDialogProduto: false,
     edicao: false,
     novoOuEdicaoProduto: {},
-    novaOuEdicaoEmpresa: {      
-      endereco: {       
-      },
-      produto: [],
+    novaOuEdicaoEmpresa: {
+      endereco: {},
+      produto: []
     },
-    nomesEmpresas: [],    
+    nomesEmpresas: []
   }),
   created() {
     this.buscarNomesDasEmpresas();
@@ -388,11 +391,10 @@ export default {
 
   methods: {
     async buscarNomesDasEmpresas() {
-
-     let resposta = await EmpresaHttp.buscarTodosNomes()     
-     if(resposta.status === 200){
-       this.nomesEmpresas = resposta.data
-     }     
+      let resposta = await EmpresaHttp.buscarTodosNomes();
+      if (resposta.status === 200) {
+        this.nomesEmpresas = resposta.data;
+      }
     },
     async buscarDadosEmpresa() {
       if (this.selectIdEmpresa === "") {
@@ -402,36 +404,67 @@ export default {
       this.validacao = "";
 
       this.transacoesPorEmpresa.splice(0, this.transacoesPorEmpresa.length);
-      let empresa = await EmpresaHttp.buscaPorId(this.selectIdEmpresa)
+      let empresa = await EmpresaHttp.buscaPorId(this.selectIdEmpresa);
 
-      if( empresa.status === 200){
+      if (empresa.status === 200) {
         this.empresa = empresa.data;
-        this.empresaSelecionada = empresa.data
+        this.empresaSelecionada = empresa.data;
       }
     },
-    limparEFecharEmpresaNova() {
-      this.novaOuEdicaoEmpresa = {
-        endereco:{},
-        produtos:[]
+   async salvarEmpresa() {
+
+      if (
+        this.novaOuEdicaoEmpresa.nome === undefined ||
+        this.novaOuEdicaoEmpresa.cnpj === undefined ||
+        this.novaOuEdicaoEmpresa.email === undefined ||
+        this.novaOuEdicaoEmpresa.tel === undefined ||
+        this.novaOuEdicaoEmpresa.endereco.rua === undefined ||
+        this.novaOuEdicaoEmpresa.endereco.numero === undefined ||
+        this.novaOuEdicaoEmpresa.endereco.bairro === undefined
+      ) {        
+        this.validacaoDialog = "Preencher todos os campos *Obrigatório";
+        return;
       }      
-      this.isDialogEmpresa = false;
-      this.edicao = false;
-      
+      this.validacao = "";
+
+      let resposta = await EmpresaHttp.adicionar(this.novaOuEdicaoEmpresa);
+      if(resposta.status ===200){
+        this.buscarNomesDasEmpresas();
+        this.limparEFecharEmpresaNova();
+        this.validacao = "Empresa criada com sucesso!"
+
+        setTimeout(()=>{          
+          this.validacao = ""        
+        }, 2000)
+
+      }
+
     },
+
     editarEmpresa() {
-     
       this.edicao = true;
       this.isDialogEmpresa = true;
-      this.novaOuEdicaoEmpresa = JSON.parse(JSON.stringify(this.empresa))
-            
+      this.novaOuEdicaoEmpresa = JSON.parse(JSON.stringify(this.empresa));
     },
-    async atualizarEmpresa() {     
-
-      let resposta = await EmpresaHttp.editar(this.selectIdEmpresa, this.novaOuEdicaoEmpresa);
+    async atualizarEmpresa() {
+      let resposta = await EmpresaHttp.editar(
+        this.selectIdEmpresa,
+        this.novaOuEdicaoEmpresa
+      );
       this.empresa = resposta.data;
       this.buscarNomesDasEmpresas();
       this.limparEFecharEmpresaNova();
     },
+    limparEFecharEmpresaNova() {
+      this.novaOuEdicaoEmpresa = {
+        endereco: {},
+        produtos: []
+      };
+      this.isDialogEmpresa = false;
+      this.edicao = false;
+      this.validacaoDialog = "";
+    },
+
     cancelarCadastroProduto() {
       this.edicao = false;
       this.novoOuEdicaoProduto = {};
@@ -448,7 +481,9 @@ export default {
           idProduto = this.empresas[i].produtos.length;
           this.novoOuEdicaoProduto.id = idProduto;
           this.novoOuEdicaoProduto.ativo = true;
-          this.empresas[i].produtos.push(Object.assign({}, this.novoOuEdicaoProduto));
+          this.empresas[i].produtos.push(
+            Object.assign({}, this.novoOuEdicaoProduto)
+          );
           this.empresaSelecionada = JSON.parse(
             JSON.stringify(this.empresas[i])
           );
@@ -468,7 +503,9 @@ export default {
       let idProduto = this.novoOuEdicaoProduto.id;
 
       //  convertendo para number pois vem string, para funcionar o toFixed
-      this.novoOuEdicaoProduto.valor = parseFloat(this.novoOuEdicaoProduto.valor);
+      this.novoOuEdicaoProduto.valor = parseFloat(
+        this.novoOuEdicaoProduto.valor
+      );
 
       // for para achar a empresa
       for (let i = 0; i < this.empresas.length; i++) {
@@ -513,16 +550,8 @@ export default {
           break;
         }
       }
-    },    
-    salvarnovaOuEdicaoEmpresa() {
-      this.novaOuEdicaoEmpresa.id = this.geradorId;
-      this.geradorId++;
-      var empresaSalvando = Object.assign({}, this.novaOuEdicaoEmpresa);
-      
-      this.empresas.push(empresaSalvando);
-      this.isDialogEmpresa = !this.isDialogEmpresa;
-    },
-  },
+    }
+  }
 };
 </script>
 
