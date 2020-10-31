@@ -148,13 +148,13 @@
             Nenhuma empresa selecionada
           </v-card-text>
           <v-row v-else>
-            <v-col cols="12" sm="3">
+            <v-col cols="12" sm="2">
               <v-card-text>
                 <strong>Nome: </strong>
                 {{ empresa.nome }}</v-card-text
               >
             </v-col>
-            <v-col cols="12" sm="2">
+            <v-col cols="12" sm="3">
               <v-card-text>
                 <strong>Cnpj: </strong>{{ empresa.cnpj }}</v-card-text
               >
@@ -285,7 +285,7 @@
               <v-icon
                 small
                 @click="ativarInativarProduto(item)"
-                v-if="item.ativo"
+                v-if="item.status"
                 color="green"
                 >mdi-check-bold</v-icon
               >
@@ -365,16 +365,11 @@ export default {
         value: "acao"
       }
     ],
-    empresa: {},
-    empresaSelecionada: {
-      endereco: {},
-      produtos: []
-    },
-    transacoesGeral: [],
+    empresa: {},       
     selectIdEmpresa: "",
     validacao: "",
     validacaoDialog: "",
-    transacoesPorEmpresa: [],
+    transacoesPorEmpresa:[],
     isDialogEmpresa: false,
     isDialogProduto: false,
     edicao: false,
@@ -402,17 +397,23 @@ export default {
         return;
       }
       this.validacao = "";
-
+      
+      //Limpa o array, para quando trocar de empresa sem transações nao mostrar nada
       this.transacoesPorEmpresa.splice(0, this.transacoesPorEmpresa.length);
       let empresa = await EmpresaHttp.buscaPorId(this.selectIdEmpresa);
 
       if (empresa.status === 200) {
         this.empresa = empresa.data;
-        this.empresaSelecionada = empresa.data;
+        if(empresa.data.transacoes.length>0){
+         for (let i = 0; i < empresa.data.transacoes.length; i++) {
+           this.transacoesPorEmpresa.push(empresa.data.transacoes[i])           
+         }
+        }
+       
       }
     },
    async salvarEmpresa() {
-
+    //  Validação de todos os campos
       if (
         this.novaOuEdicaoEmpresa.nome === undefined ||
         this.novaOuEdicaoEmpresa.cnpj === undefined ||
@@ -436,9 +437,7 @@ export default {
         setTimeout(()=>{          
           this.validacao = ""        
         }, 2000)
-
       }
-
     },
 
     editarEmpresa() {
@@ -470,27 +469,10 @@ export default {
       this.novoOuEdicaoProduto = {};
       this.isDialogProduto = false;
     },
-    salvarProduto(produto) {
-      let idEmpresa = this.selectIdEmpresa;
-      let idProduto = "";
-      produto.valor = parseFloat(produto.valor);
-
-      // for para gerar um id de produto
-      for (let i = 0; i < this.empresas.length; i++) {
-        if (idEmpresa == this.empresas[i].id) {
-          idProduto = this.empresas[i].produtos.length;
-          this.novoOuEdicaoProduto.id = idProduto;
-          this.novoOuEdicaoProduto.ativo = true;
-          this.empresas[i].produtos.push(
-            Object.assign({}, this.novoOuEdicaoProduto)
-          );
-          this.empresaSelecionada = JSON.parse(
-            JSON.stringify(this.empresas[i])
-          );
-          break;
-        }
-      }
-      this.cancelarCadastroProduto();
+    async salvarProduto() {
+     //console.log(this.selectIdEmpresa)
+     let resposta = await EmpresaHttp.adicionarProduto(this.selectIdEmpresa, this.novoOuEdicaoProduto)
+     console.log(resposta)
     },
     editarProduto(produto) {
       //alert(JSON.stringify(produto))
@@ -517,9 +499,6 @@ export default {
                 {},
                 this.novoOuEdicaoProduto
               );
-              this.empresaSelecionada = JSON.parse(
-                JSON.stringify(this.empresas[i])
-              );
               break;
             }
           }
@@ -541,9 +520,6 @@ export default {
               //alert(JSON.stringify(this.empresas[i].produtos[p].id))
               this.empresas[i].produtos[p].ativo = !this.empresas[i].produtos[p]
                 .ativo;
-              this.empresaSelecionada = JSON.parse(
-                JSON.stringify(this.empresas[i])
-              );
               break;
             }
           }

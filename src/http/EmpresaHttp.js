@@ -17,5 +17,8 @@ export default {
     },
     async adicionar(empresa){
         return   axios.post(`${API_HOST}`, empresa).then((resposta)=> resposta )
+    },
+    async adicionarProduto(id, produto){
+        return   axios.post(`${API_HOST}/produto/${id}`, produto).then((resposta)=> resposta )
     }
 }
