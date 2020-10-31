@@ -20,5 +20,8 @@ export default {
     },
     async adicionarProduto(id, produto){
         return   axios.post(`${API_HOST}/produto/${id}`, produto).then((resposta)=> resposta )
+    },
+    async editarProduto(id, produto){
+        return   axios.put(`${API_HOST}/produto/${id}`, produto).then((resposta)=> resposta )
     }
 }

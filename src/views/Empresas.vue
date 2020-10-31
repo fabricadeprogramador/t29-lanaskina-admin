@@ -9,10 +9,13 @@
           <v-card>
             <v-row justify="center">
               <v-col sm="9">
-                <v-slide-y-transition leave-absolute>
-                  <v-alert class="mt-3" type="warning" v-if="validacaoDialog != ''">{{
-                    validacaoDialog
-                  }}</v-alert>
+                <v-slide-y-transition>
+                  <v-alert
+                    class="mt-3"
+                    type="warning"
+                    v-if="validacaoDialog != ''"
+                    >{{ validacaoDialog }}</v-alert
+                  >
                 </v-slide-y-transition>
               </v-col>
             </v-row>
@@ -102,7 +105,23 @@
     </template>
     <!-- final dialog nova empresa -->
 
-    <!-- inicio msg de validação -->
+    <!-- Inicio mensagem de salvo com sucesso -->
+    <template >
+      <v-row  >
+        <v-dialog v-model="isDialogSalvoComSucesso" max-width="400" >
+          <v-row class="mx-0 ">
+            <v-col cols="12"  >
+              <v-alert dense type="success" class="mx-0 my-0">
+                <strong>{{ msgSalvoComSucesso }}</strong>
+              </v-alert>
+            </v-col>
+          </v-row>
+        </v-dialog>
+      </v-row>
+    </template>
+    <!-- Final mensagem de salvo com sucesso -->
+
+    <!-- inicio msg de validação Select -->
     <v-row justify="center">
       <v-col sm="9">
         <v-slide-y-transition leave-absolute>
@@ -112,7 +131,7 @@
         </v-slide-y-transition>
       </v-col>
     </v-row>
-    <!-- Fim msg de validação -->
+    <!-- Fim msg de validação Select-->
 
     <!-- inicio select de empresa -->
     <v-row class="mb-2 ma-5">
@@ -204,6 +223,18 @@
             <v-row>
               <v-dialog v-model="isDialogProduto" max-width="600px" persistent>
                 <v-card>
+                  <v-row justify="center" class="mx-0 my-0 ">
+                    <v-col sm="7">
+                      <v-slide-y-transition leave-absolute>
+                        <v-alert
+                          class="mt-3"
+                          type="warning"
+                          v-if="validacaoDialog != ''"
+                          >{{ validacaoDialog }}</v-alert
+                        >
+                      </v-slide-y-transition>
+                    </v-col>
+                  </v-row>
                   <v-card-title class="mb-0 pb-0">{{
                     edicao ? "Edição Produto" : "Novo Produto"
                   }}</v-card-title>
@@ -365,13 +396,15 @@ export default {
         value: "acao"
       }
     ],
-    empresa: {},       
+    empresa: {},
     selectIdEmpresa: "",
     validacao: "",
     validacaoDialog: "",
-    transacoesPorEmpresa:[],
+    msgSalvoComSucesso: "",
+    transacoesPorEmpresa: [],
     isDialogEmpresa: false,
     isDialogProduto: false,
+    isDialogSalvoComSucesso: false,
     edicao: false,
     novoOuEdicaoProduto: {},
     novaOuEdicaoEmpresa: {
@@ -397,46 +430,48 @@ export default {
         return;
       }
       this.validacao = "";
-      
+
       //Limpa o array, para quando trocar de empresa sem transações nao mostrar nada
       this.transacoesPorEmpresa.splice(0, this.transacoesPorEmpresa.length);
       let empresa = await EmpresaHttp.buscaPorId(this.selectIdEmpresa);
 
       if (empresa.status === 200) {
         this.empresa = empresa.data;
-        if(empresa.data.transacoes.length>0){
-         for (let i = 0; i < empresa.data.transacoes.length; i++) {
-           this.transacoesPorEmpresa.push(empresa.data.transacoes[i])           
-         }
+        if (empresa.data.transacoes.length > 0) {
+          for (let i = 0; i < empresa.data.transacoes.length; i++) {
+            this.transacoesPorEmpresa.push(empresa.data.transacoes[i]);
+          }
         }
-       
       }
     },
-   async salvarEmpresa() {
-    //  Validação de todos os campos
+    async salvarEmpresa() {
+      //  Validação de todos os campos antes de mandar para o back-end
       if (
-        this.novaOuEdicaoEmpresa.nome === undefined ||
-        this.novaOuEdicaoEmpresa.cnpj === undefined ||
-        this.novaOuEdicaoEmpresa.email === undefined ||
-        this.novaOuEdicaoEmpresa.tel === undefined ||
-        this.novaOuEdicaoEmpresa.endereco.rua === undefined ||
-        this.novaOuEdicaoEmpresa.endereco.numero === undefined ||
-        this.novaOuEdicaoEmpresa.endereco.bairro === undefined
-      ) {        
+        this.novaOuEdicaoEmpresa.nome === undefined || this.novaOuEdicaoEmpresa.nome === ""||
+        this.novaOuEdicaoEmpresa.cnpj === undefined || this.novaOuEdicaoEmpresa.cnpj === ""||
+        this.novaOuEdicaoEmpresa.email === undefined ||this.novaOuEdicaoEmpresa.email === ""||
+        this.novaOuEdicaoEmpresa.tel === undefined ||this.novaOuEdicaoEmpresa.tel === ""||
+        this.novaOuEdicaoEmpresa.endereco.rua === undefined ||this.novaOuEdicaoEmpresa.endereco.rua ===  ""||
+        this.novaOuEdicaoEmpresa.endereco.numero === undefined ||this.novaOuEdicaoEmpresa.endereco.numero ===  ""||
+        this.novaOuEdicaoEmpresa.endereco.bairro === undefined || this.novaOuEdicaoEmpresa.endereco.bairro ===  ""
+      ) {
         this.validacaoDialog = "Preencher todos os campos *Obrigatório";
         return;
-      }      
-      this.validacao = "";
+      }
+      this.validacaoDialog = "";
 
       let resposta = await EmpresaHttp.adicionar(this.novaOuEdicaoEmpresa);
-      if(resposta.status ===200){
+      if (resposta.status === 200) {
         this.buscarNomesDasEmpresas();
-        this.limparEFecharEmpresaNova();
-        this.validacao = "Empresa criada com sucesso!"
+        
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Empresa criada com sucesso!";
 
-        setTimeout(()=>{          
-          this.validacao = ""        
-        }, 2000)
+        setTimeout(() => {
+          this.limparEFecharEmpresaNova();
+          this.msgSalvoComSucesso = "";
+          this.isDialogSalvoComSucesso = false;
+        }, 1500);
       }
     },
 
@@ -446,13 +481,37 @@ export default {
       this.novaOuEdicaoEmpresa = JSON.parse(JSON.stringify(this.empresa));
     },
     async atualizarEmpresa() {
+
+     //  Validação de todos os campos antes de mandar para o back-end
+      if (
+        this.novaOuEdicaoEmpresa.nome === undefined || this.novaOuEdicaoEmpresa.nome === ""||
+        this.novaOuEdicaoEmpresa.cnpj === undefined || this.novaOuEdicaoEmpresa.cnpj === ""||
+        this.novaOuEdicaoEmpresa.email === undefined ||this.novaOuEdicaoEmpresa.email === ""||
+        this.novaOuEdicaoEmpresa.tel === undefined ||this.novaOuEdicaoEmpresa.tel === ""||
+        this.novaOuEdicaoEmpresa.endereco.rua === undefined ||this.novaOuEdicaoEmpresa.endereco.rua ===  ""||
+        this.novaOuEdicaoEmpresa.endereco.numero === undefined ||this.novaOuEdicaoEmpresa.endereco.numero ===  ""||
+        this.novaOuEdicaoEmpresa.endereco.bairro === undefined || this.novaOuEdicaoEmpresa.endereco.bairro ===  ""
+      ) {
+        this.validacaoDialog = "Preencher todos os campos *Obrigatório";
+        return;
+      }
+      this.validacaoDialog = "";
+
       let resposta = await EmpresaHttp.editar(
         this.selectIdEmpresa,
         this.novaOuEdicaoEmpresa
       );
       this.empresa = resposta.data;
       this.buscarNomesDasEmpresas();
-      this.limparEFecharEmpresaNova();
+      
+      this.isDialogSalvoComSucesso = true;
+      this.msgSalvoComSucesso = "Empresa atualizada com sucesso!";
+
+      setTimeout(() => {
+        this.limparEFecharEmpresaNova();
+        this.msgSalvoComSucesso = "";
+        this.isDialogSalvoComSucesso = false;
+      }, 1500);
     },
     limparEFecharEmpresaNova() {
       this.novaOuEdicaoEmpresa = {
@@ -468,11 +527,43 @@ export default {
       this.edicao = false;
       this.novoOuEdicaoProduto = {};
       this.isDialogProduto = false;
+      this.validacaoDialog = "";
     },
     async salvarProduto() {
-     //console.log(this.selectIdEmpresa)
-     let resposta = await EmpresaHttp.adicionarProduto(this.selectIdEmpresa, this.novoOuEdicaoProduto)
-     console.log(resposta)
+      //validação dos campos antes de mandar para o back-end
+      if (
+        this.novoOuEdicaoProduto.nome == undefined ||this.novoOuEdicaoProduto.nome == ""||
+        this.novoOuEdicaoProduto.valor == undefined ||this.novoOuEdicaoProduto.valor == ""||
+        this.novoOuEdicaoProduto.descricao == undefined ||this.novoOuEdicaoProduto.descricao == ""
+      )
+        return (this.validacaoDialog = "Preencher todos os campos");
+      this.validacaoDialog = "";
+
+      let resposta = await EmpresaHttp.adicionarProduto(
+        this.selectIdEmpresa,
+        this.novoOuEdicaoProduto
+      );
+      if (resposta.status == 200) {
+        this.empresa = this.empresa = resposta.data;
+        
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Produto cadastrado com sucesso!";
+
+        setTimeout(() => {
+          this.cancelarCadastroProduto();
+          this.msgSalvoComSucesso = "";
+          this.isDialogSalvoComSucesso = false;
+        }, 1500);
+      } else {        
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Erro ao salvar produto!";
+
+        setTimeout(() => {
+          this.cancelarCadastroProduto();
+          this.msgSalvoComSucesso = "";
+          this.isDialogSalvoComSucesso = false;
+        }, 1500);
+      }
     },
     editarProduto(produto) {
       //alert(JSON.stringify(produto))
@@ -480,52 +571,79 @@ export default {
       this.edicao = true;
       this.novoOuEdicaoProduto = Object.assign({}, produto);
     },
-    atualizarProduto() {
-      let idEmpresa = this.selectIdEmpresa;
-      let idProduto = this.novoOuEdicaoProduto.id;
+    async atualizarProduto() {
+       //validação dos campos antes de mandar para o back-end
+      if (
+        this.novoOuEdicaoProduto.nome == undefined ||this.novoOuEdicaoProduto.nome == ""||
+        this.novoOuEdicaoProduto.valor == undefined ||this.novoOuEdicaoProduto.valor == ""||
+        this.novoOuEdicaoProduto.descricao == undefined ||this.novoOuEdicaoProduto.descricao == ""
+      )
+        return (this.validacaoDialog = "Preencher todos os campos");
+      this.validacaoDialog = "";
 
-      //  convertendo para number pois vem string, para funcionar o toFixed
-      this.novoOuEdicaoProduto.valor = parseFloat(
-        this.novoOuEdicaoProduto.valor
+      let resposta = await EmpresaHttp.editarProduto(
+        this.selectIdEmpresa,
+        this.novoOuEdicaoProduto
       );
+      if (resposta.status == 200) {
+        this.empresa = this.empresa = resposta.data;
+        
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Produto Atualizado com sucesso!";
 
-      // for para achar a empresa
-      for (let i = 0; i < this.empresas.length; i++) {
-        if (this.empresas[i].id === idEmpresa) {
-          //  for para depois que achar a empresa, achar a posição do produto
-          for (let p = 0; p < this.empresas[i].produtos.length; p++) {
-            if (this.empresas[i].produtos[p].id === idProduto) {
-              this.empresas[i].produtos[p] = Object.assign(
-                {},
-                this.novoOuEdicaoProduto
-              );
-              break;
-            }
-          }
+        setTimeout(() => {
           this.cancelarCadastroProduto();
-          break;
-        }
+          this.msgSalvoComSucesso = "";
+          this.isDialogSalvoComSucesso = false;
+        }, 1500);
+      } else {
+        
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Erro ao Atualizar produto!";
+
+        setTimeout(() => {
+          this.cancelarCadastroProduto();
+          this.msgSalvoComSucesso = "";
+          this.isDialogSalvoComSucesso = false;
+        }, 1500);
       }
     },
-    ativarInativarProduto(produto) {
-      //alert(JSON.stringify(produto))
-      let idEmpresa = this.selectIdEmpresa;
+    async ativarInativarProduto(produto) {
+     
+     let produtoatualizado = produto;
+     produtoatualizado.status = !produtoatualizado.status
+    
+    //  this.novoOuEdicaoProduto.status = !this.novoOuEdicaoProduto.status;
 
-      for (let i = 0; i < this.empresas.length; i++) {
-        // achar empresa
-        if (idEmpresa == this.empresas[i].id) {
-          // achar o produto dentro da empresa
-          for (let p = 0; p < this.empresas[i].produtos.length; p++) {
-            if (produto.id == this.empresas[i].produtos[p].id) {
-              //alert(JSON.stringify(this.empresas[i].produtos[p].id))
-              this.empresas[i].produtos[p].ativo = !this.empresas[i].produtos[p]
-                .ativo;
-              break;
-            }
-          }
-          break;
-        }
+      let resposta = await EmpresaHttp.editarProduto(
+        this.selectIdEmpresa,
+        produtoatualizado
+      );
+      if (resposta.status == 200) {
+        this.empresa = this.empresa = resposta.data;
+        
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Produto Atualizado com sucesso!";
+
+        setTimeout(() => {
+          this.cancelarCadastroProduto();
+          this.msgSalvoComSucesso = "";
+          this.isDialogSalvoComSucesso = false;
+        }, 1500);
+      } else {
+        
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Erro ao Atualizar produto!";
+
+        setTimeout(() => {
+          this.cancelarCadastroProduto();
+          this.msgSalvoComSucesso = "";
+          this.isDialogSalvoComSucesso = false;
+        }, 1500);
       }
+
+
+
     }
   }
 };
