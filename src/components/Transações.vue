@@ -44,7 +44,7 @@
                             <v-row style="height: 60px;">
                               <v-col cols="12" sm="2">
                                 <v-text-field
-                                  v-model="transacaoCorrente.cliente.id"
+                                  v-model="transacaoCorrente.cliente._id"
                                   label="ID"
                                   outlined
                                   :disabled="isDisable"
@@ -73,7 +73,7 @@
                             <v-row>
                               <v-col cols="12" sm="2">
                                 <v-text-field
-                                  v-model="transacaoCorrente.empresa.id"
+                                  v-model="transacaoCorrente.empresa._id"
                                   label="ID"
                                   outlined
                                   :disabled="isDisable"
