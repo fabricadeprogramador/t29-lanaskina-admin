@@ -425,6 +425,7 @@ export default {
       }
     },
     async buscarDadosEmpresa() {
+      console.log("chamou")
       if (this.selectIdEmpresa === "") {
         this.validacao = "Selecione uma empresa";
         return;

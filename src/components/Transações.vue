@@ -40,9 +40,9 @@
                       <v-row>
                         <v-col cols="12" sm="12">
                           <v-card class="px-5" flat>
-                            Cliente:
+                            
                             <v-row style="height: 60px;">
-                              <v-col cols="12" sm="2">
+                              <!-- <v-col cols="12" >
                                 <v-text-field
                                   v-model="transacaoCorrente.cliente._id"
                                   label="ID"
@@ -50,46 +50,46 @@
                                   :disabled="isDisable"
                                   dense
                                 ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="7">
+                              </v-col> -->
+                              <v-col cols="12">
                                 <v-text-field
                                   v-model="transacaoCorrente.cliente.nome"
-                                  label="NOME:"
+                                  label="Nome Cliente"
                                   outlined
                                   :disabled="isDisable"
                                   dense
                                 ></v-text-field>
                               </v-col>
-                              <v-col cols="12" sm>
+                              <!-- <v-col cols="12" sm="3">
                                 <v-text-field
                                   v-model="transacaoCorrente.cliente.ativo?'Ativo':'Inativo'"
-                                  label="STATUS:"
+                                  label="Status Cliente :"
                                   outlined
                                   :disabled="isDisable"
                                   dense
                                 ></v-text-field>
-                              </v-col>
-                            </v-row>Empresa:
+                              </v-col> -->
+                            </v-row>
                             <v-row>
-                              <v-col cols="12" sm="2">
+                              <!-- <v-col cols="12" sm="2">
                                 <v-text-field
-                                  v-model="transacaoCorrente.empresa._id"
+                                  v-model="transacaoCorrente.empresaNome"
                                   label="ID"
                                   outlined
                                   :disabled="isDisable"
                                   dense
                                 ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="7">
+                              </v-col> -->
+                              <v-col cols="12" >
                                 <v-text-field
-                                  v-model="transacaoCorrente.empresa.nome"
+                                  v-model="transacaoCorrente.empresaNome"
                                   label="Nome Empresa"
                                   outlined
-                                  :disabled="isDisable"
+                                  :disabled="isDisable"                                   
                                   dense
                                 ></v-text-field>
                               </v-col>
-                              <v-col cols="12" sm="3">
+                              <!-- <v-col cols="12" sm="3">
                                 <v-text-field
                                   v-model="transacaoCorrente.empresa.endereco.bairro"
                                   label="Bairro"
@@ -97,7 +97,7 @@
                                   :disabled="isDisable"
                                   dense
                                 ></v-text-field>
-                              </v-col>
+                              </v-col> -->
                             </v-row>Histórico:
                             <v-row style="height: 60px;">
                               <v-col cols="12" sm="8">
@@ -233,6 +233,7 @@ export default {
 
   methods: {
     initialize() {
+      console
      // console.log(this.isViewsTransacoes);
       if (this.isViewsTransacoes) {
         this.cabecalhoTransacoes.splice(1, 0, {
@@ -245,9 +246,10 @@ export default {
     },
 
     abrirDialog(transacoes) {
-      console.log(transacoes);
-      this.transacaoCorrente = Object.assign({}, transacoes);
+      
+      this.transacaoCorrente = JSON.parse(JSON.stringify(transacoes));
       this.isDialogOpen = true;
+      console.log(this.transacaoCorrente)
     },
 
     testeSoma() {
