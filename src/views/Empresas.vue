@@ -419,13 +419,13 @@ export default {
 
   methods: {
     async buscarNomesDasEmpresas() {
-      let resposta = await EmpresaHttp.buscarTodosNomes();
+      let resposta = await EmpresaHttp.buscarTodosNomes();      
       if (resposta.status === 200) {
         this.nomesEmpresas = resposta.data;
       }
     },
     async buscarDadosEmpresa() {
-      console.log("chamou")
+     // console.log("chamou")
       if (this.selectIdEmpresa === "") {
         this.validacao = "Selecione uma empresa";
         return;
@@ -435,7 +435,7 @@ export default {
       //Limpa o array, para quando trocar de empresa sem transações nao mostrar nada
       this.transacoesPorEmpresa.splice(0, this.transacoesPorEmpresa.length);
       let empresa = await EmpresaHttp.buscaPorId(this.selectIdEmpresa);
-
+     
       if (empresa.status === 200) {
         this.empresa = empresa.data;
         if (empresa.data.transacoes.length > 0) {

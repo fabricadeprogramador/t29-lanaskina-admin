@@ -233,15 +233,15 @@ export default {
 
   methods: {
     initialize() {
-      console
+     
      // console.log(this.isViewsTransacoes);
       if (this.isViewsTransacoes) {
         this.cabecalhoTransacoes.splice(1, 0, {
           text: "Empresa",
-          value: "empresa.nome",
+          value: "empresaNome",
         });
       }
-
+      console.log("rrr",this.movimentacao_empresa)
       this.transacoes = this.movimentacao_empresa;
     },
 
