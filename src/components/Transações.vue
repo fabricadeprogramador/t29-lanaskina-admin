@@ -241,7 +241,7 @@ export default {
           value: "empresaNome",
         });
       }
-      console.log("rrr",this.movimentacao_empresa)
+     
       this.transacoes = this.movimentacao_empresa;
     },
 
@@ -249,7 +249,7 @@ export default {
       
       this.transacaoCorrente = JSON.parse(JSON.stringify(transacoes));
       this.isDialogOpen = true;
-      console.log(this.transacaoCorrente)
+     
     },
 
     testeSoma() {
