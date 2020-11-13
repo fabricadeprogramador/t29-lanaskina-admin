@@ -1,5 +1,15 @@
 <template>
   <div>
+    <!-- mensagem informativa  -->
+    <v-dialog v-model="isDialogSalvoComSucesso" max-width="400">
+      <v-row class="mx-0 ">
+        <v-col cols="12">
+          <v-alert dense type="success" class="mx-0 my-0">
+            <strong>{{ msgSalvoComSucesso }}</strong>
+          </v-alert>
+        </v-col>
+      </v-row>
+    </v-dialog>
     <!-- Formulário de Cadastro -->
     <v-card max-width="50%" class="mx-auto" v-show="isFormOpen">
       <v-btn
@@ -10,7 +20,7 @@
         top
         right
         fab
-        @click="isFormOpen = false"
+        @click="fechaCadastroUsuario"
       >
         <v-icon>mdi-close</v-icon>
       </v-btn>
@@ -68,6 +78,16 @@
 
           <v-row justify="center">
             <v-btn
+              v-if="isEdicao"
+              :disabled="!valid"
+              color="success"
+              class="mr-4"
+              @click="atualizar"
+            >
+              Atualizar
+            </v-btn>
+            <v-btn
+              v-else
               :disabled="!valid"
               color="success"
               class="mr-4"
@@ -83,8 +103,6 @@
       </v-form>
     </v-card>
     <!-- Formulário de Cadastro -->
-
-
 
     <!-- Listagem de usuários cadastrados -->
     <v-data-table
@@ -129,18 +147,21 @@
 </template>
 
 <script>
+import UsuarioHttp from "@/http/UsuarioHttp";
+
 export default {
   data: () => ({
     cabecalho: [
       {
         text: "Nome",
-        value: "nome",
+        value: "nome"
       },
       { text: "Username", value: "username" },
       { text: "Tipo", value: "role" },
-      { text: "Ações", value: "acoes", sortable: false },
+      { text: "Ações", value: "acoes", sortable: false }
     ],
-    geradorId: 5,
+    isDialogSalvoComSucesso: false,
+    msgSalvoComSucesso: "",
     isFormOpen: false,
     confirmarSenha: "",
     usuarios: [],
@@ -149,113 +170,99 @@ export default {
       username: "",
       senha: "",
       role: "ADMIN",
-      ativo: true,
+      ativo: true
     },
     isEdicao: false,
     valid: false,
     nomeRules: [
-      (v) => !!v || "Nome é obrigatório",
-      (v) =>
+      v => !!v || "Nome é obrigatório",
+      v =>
         (v.length >= 10 && v.length <= 30) ||
-        "Nome precisa ter entre 10 e 30 caracteres",
+        "Nome precisa ter entre 10 e 30 caracteres"
     ],
     usernameRules: [
-      (v) => !!v || "Username é obrigatório",
-      (v) =>
+      v => !!v || "Username é obrigatório",
+      v =>
         (v.length >= 3 && v.length <= 15) ||
-        "Username precisa ter entre 3 e 15 caracteres",
+        "Username precisa ter entre 3 e 15 caracteres"
     ],
     senhaRules: [
-      (v) => !!v || "Senha é obrigatório",
-      (v) =>
+      v => !!v || "Senha é obrigatório",
+      v =>
         (v.length >= 8 && v.length <= 12) ||
-        "Senha precisa ter entre 8 e 12 caracteres",
-    ],
+        "Senha precisa ter entre 8 e 12 caracteres"
+    ]
   }),
 
   created() {
-    this.initialize();
+    this.buscarTodos();
   },
 
   methods: {
+    fechaCadastroUsuario() {
+      this.isFormOpen = false;
+      this.cancelar();
+    },
+
     cancelar() {
       this.usuarioCorrente = {
         nome: "",
         username: "",
         senha: "",
-        role: "ADMIN",
+        role: "ADMIN"
       };
       this.confirmarSenha = "";
       this.isEdicao = false;
     },
 
-    initialize() {
-      this.usuarios = [
-        {
-          id: 0,
-          nome: "Jão da Silva",
-          username: "jao01",
-          senha: "123",
-          role: "ADMIN",
-          ativo: true,
-        },
-        {
-          id: 1,
-          nome: "Maria da Silva",
-          username: "mariaa",
-          senha: "123",
-          role: "ADMIN",
-          ativo: true,
-        },
-        {
-          id: 2,
-          nome: "Jão da Silva",
-          username: "jao01",
-          senha: "123",
-          role: "ADMIN",
-          ativo: true,
-        },
-        {
-          id: 3,
-          nome: "Jão da Silva",
-          username: "jao01",
-          senha: "123",
-          role: "ADMIN",
-          ativo: true,
-        },
-        {
-          id: 4,
-          nome: "Jão da Silva",
-          username: "jao01",
-          senha: "123",
-          role: "ADMIN",
-          ativo: true,
-        },
-      ];
+    async buscarTodos() {
+      let resposta = await UsuarioHttp.buscarTodos();
+
+      if (resposta.status === 200) {
+        this.usuarios = resposta.data;
+      }
     },
 
-    salvar() {
+    async salvar() {
       if (this.usuarioCorrente.senha != this.confirmarSenha) {
         alert("Senhas não conferem!");
-      } else {
-        if (!this.isEdicao) {
-          this.adicionar();
-        } else {
-          this.salvarEdicao();
-        }
+      }
 
-        this.isFormOpen = false;
-        this.cancelar();
+      let resposta = await UsuarioHttp.adicionar(this.usuarioCorrente);
+      if (resposta.status === 200) {
+        this.fechaCadastroUsuario();
+        this.buscarTodos();
+
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Usuário criado com sucesso";
+
+        setTimeout(() => {
+          this.isDialogSalvoComSucesso = false;
+          this.msgSalvoComSucesso = "";
+        }, 1500);
       }
     },
 
-    salvarEdicao() {
-      for (let i = 0; i < this.usuarios.length; i++) {
-        if (this.usuarioCorrente.id == this.usuarios[i].id) {
-          Object.assign(this.usuarios[i], this.usuarioCorrente);
-          break;
-        }
+    async atualizar() {
+      if (this.usuarioCorrente.senha != this.confirmarSenha) {
+        alert("Senhas não conferem!");
       }
+      
+      let resposta = await UsuarioHttp.editar(this.usuarioCorrente);
+
+      if(resposta.status === 200){
+        this.fechaCadastroUsuario();
+        this.buscarTodos();
+
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Usuário atualizado com sucesso";
+
+        setTimeout(() => {
+          this.isDialogSalvoComSucesso = false;
+          this.msgSalvoComSucesso = "";
+        }, 1500);
+      }
+
     },
 
     editar(usuario) {
@@ -270,14 +277,21 @@ export default {
       this.usuarios.push(this.usuarioCorrente);
     },
 
-    ativarInativar(usuario) {
-      for (let i = 0; i < this.usuarios.length; i++) {
-        if (usuario.id == this.usuarios[i].id) {
-          this.usuarios[i].ativo = !this.usuarios[i].ativo;
-          break;
-        }
+    async ativarInativar(usuario) {
+      let resposta = await UsuarioHttp.ativarInativar(usuario._id);
+
+      if (resposta.status === 200) {
+        this.buscarTodos();
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Usuário atualizado com sucesso!";
+        this.buscarTodos();
+
+        setTimeout(() => {
+          this.isDialogSalvoComSucesso = false;
+          this.msgSalvoComSucesso = "";
+        }, 1500);
       }
-    },
-  },
+    }
+  }
 };
 </script>

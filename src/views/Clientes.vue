@@ -1,5 +1,20 @@
 <template>
   <div>
+
+    <!-- mensagem informativa  -->
+    <v-dialog v-model="isDialogSalvoComSucesso" max-width="400">
+      <v-row class="mx-0 ">
+        <v-col cols="12">
+          <v-alert
+             dense         
+            type="success"
+            class="mx-0 my-0"
+          >
+            <strong>{{ msgSalvoComSucesso }}</strong>
+          </v-alert>
+        </v-col>
+      </v-row>
+    </v-dialog>
     <!-- Listagem de clientes cadastrados -->
     <v-data-table
       :headers="cabecalhoCliente"
@@ -7,9 +22,7 @@
       :search="search"
       sort-by="nome"
       class="elevation-1"
-      >
-
-
+    >
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>Clientes Cadastrados</v-toolbar-title>
@@ -24,17 +37,29 @@
           ></v-text-field>
         </v-toolbar>
       </template>
-<!-- Início abertura/fechamento Dialog e ativar/inativar clientes -->
+      <!-- Início abertura/fechamento Dialog e ativar/inativar clientes -->
       <template v-slot:item.acoes="{ item }">
-        <v-icon small class="mr-2" @click="abrirDIalog(item)" color="primary">mdi-file-find</v-icon>
-        <v-icon small @click="ativarInativar(item)" v-if="item.ativo" color="green">mdi-check-bold</v-icon>
-        <v-icon small @click="ativarInativar(item)" v-else color="red">mdi-cancel</v-icon>
+        <v-icon small class="mr-2" @click="abrirDIalog(item)" color="primary"
+          >mdi-file-find</v-icon
+        >
+        <v-icon
+          small
+          @click="ativarInativar(item)"
+          v-if="item.usuario.ativo"
+          color="green"
+          >mdi-check-bold</v-icon
+        >
+        <v-icon small @click="ativarInativar(item)" v-else color="red"
+          >mdi-cancel</v-icon
+        >
 
         <!-- inicio CARD DO DIALOG  -->
         <v-row justify="center">
           <v-dialog v-model="isDialogOpen" width="600px" persistent>
             <v-card>
-              <v-card-title class="headline">Informações do Cliente</v-card-title>
+              <v-card-title class="headline"
+                >Informações do Cliente</v-card-title
+              >
               <v-card-text elevation="5">
                 <!-- <v-row >
                   <v-col cols="12" sm="2"  >
@@ -161,38 +186,41 @@
           </v-dialog>
         </v-row>
         <!-- fim CARD DO DIALOG  -->
-
       </template>
-<!-- Fim abertura/fechamento Dialog e ativar/inativar clientes -->
+      <!-- Fim abertura/fechamento Dialog e ativar/inativar clientes -->
       <template v-slot:no-data>
         <v-subheader>Nenhum cliente cadastro.</v-subheader>
       </template>
-
-
     </v-data-table>
   </div>
 </template>
-
+  
+  
 <script>
+import ClienteHttp from "@/http/ClienteHttp";
+import UsuarioHttp from "@/http/UsuarioHttp";
+
 export default {
   data: () => ({
     search: "",
     cabecalhoCliente: [
       {
         text: "Nome",
-        value: "nome",
+        value: "nome"
       },
       {
         text: "CPF",
-        value: "cpf",
+        value: "cpf"
       },
       ,
       {
         text: "E-mail",
-        value: "email",
+        value: "email"
       },
-      { text: "Ações", value: "acoes", sortable: false },
+      { text: "Ações", value: "acoes", sortable: false }
     ],
+    isDialogSalvoComSucesso: false,
+    msgSalvoComSucesso: "",
     isDialogOpen: false,
     isDisable: true,
     clientes: [],
@@ -202,82 +230,31 @@ export default {
       endereco: {
         rua: "",
         numero: "",
-        bairro: "",
+        bairro: ""
       },
       dataNacimento: "",
       cpf: "",
       telefone: "",
       sexo: "",
       email: "",
-      ativo: null,
-    },
+      ativo: null
+    }
   }),
 
   created() {
-    this.initialize();
+    this.buscarTodos();
   },
 
   methods: {
+    async buscarTodos() {
+      let resposta = await ClienteHttp.buscarTodos();
 
-    initialize() {
-      this.clientes = [
-
-        {
-          id: 0,
-          nome: "Jão da Silva",
-          endereco: {
-            rua: "livino",
-            numero: 11,
-            bairro: "Nova Lima",
-          },
-          dataNacimento: "11/09/1985",
-          cpf: "123456789",
-          telefone: 9999999,
-          sexo: "M",
-          email: "testeEmail@teste.com",
-          ativo: false,
-        },
-
-        {
-          id: 1,
-          nome: "Maria da Silva",
-          endereco: {
-            rua: "Afonso Pena",
-            numero: 4,
-            bairro: "Centro",
-          },
-          dataNacimento: "11/09/1980",
-          cpf: "11122266685",
-          telefone: 679955887744,
-          sexo: "F",
-          email: "emailFulano@teste.com",
-          ativo: true,
-        },
-
-        {
-          id: 2,
-          nome: "Fulano da Silva",
-          endereco: {
-            rua: "esquina",
-            numero: 11,
-            bairro: "bairro livre",
-          },
-          dataNacimento: "11/09/1998",
-          cpf: "2255887744",
-          telefone: 9963258741,
-          sexo: "F",
-          email: "teste@teste.com",
-          ativo: true,
-        },
-
-
-
-      ];
-
+      if (resposta.status === 200) {
+        this.clientes = resposta.data;
+      }
     },
 
     abrirDIalog(cliente) {
-      console.log(cliente);
       this.clienteCorrente = Object.assign({}, cliente);
       this.isDialogOpen = true;
     },
@@ -290,31 +267,34 @@ export default {
         endereco: {
           rua: "",
           numero: "",
-          bairro: "",
+          bairro: ""
         },
         dataNacimento: "",
         cpf: "",
         telefone: "",
         sexo: "",
         email: "",
-        ativo: null,
+        ativo: null
       };
     },
     // testeEdit() {
     //   this.isDisable = false;
     // },
-    ativarInativar(cliente) {
-      let achou = false;
-      let i = 0;
-      while (i < this.clientes.length && achou == false) {
-        console.log(this.clientes.length);
-        if (this.clientes[i].id == cliente.id) {
-          this.clientes[i].ativo = !this.clientes[i].ativo;
-          achou = true;
-        }
-        i++;
+    async ativarInativar(cliente) {
+      //console.log(cliente)
+      let resposta = await UsuarioHttp.ativarInativar(cliente.usuario._id);
+
+      if (resposta.status === 200) {
+        this.isDialogSalvoComSucesso = true;
+        this.msgSalvoComSucesso = "Cliente atualizado com sucesso!";
+        this.buscarTodos();
+
+        setTimeout(() => {
+          this.isDialogSalvoComSucesso = false;
+          this.msgSalvoComSucesso = "";
+        }, 1500);
       }
-    },
-  },
+    }
+  }
 };
 </script>
