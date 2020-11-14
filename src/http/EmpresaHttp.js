@@ -27,5 +27,12 @@ export default {
     },
     async editarProduto(id, produto){
         return   axios.put(`${API_HOST}/produto/${id}`, produto).then((resposta)=> resposta )
+    },
+    async buscarTotalizadores(){
+        return axios.get(`${API_HOST}/totalizadores`).then((resposta)=>resposta)
+    },
+    async buscarTotalizadoresPorEmpresa(id){
+        return axios.get(`${API_HOST}/totalizadores/${id}`).then((resposta)=>resposta)
     }
+
 }

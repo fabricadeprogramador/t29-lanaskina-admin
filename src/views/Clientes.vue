@@ -248,7 +248,7 @@ export default {
   methods: {
     async buscarTodos() {
       let resposta = await ClienteHttp.buscarTodos();
-
+      
       if (resposta.status === 200) {
         this.clientes = resposta.data;
       }

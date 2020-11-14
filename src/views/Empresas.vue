@@ -497,11 +497,12 @@ export default {
         return;
       }
       this.validacaoDialog = "";
-
+      
       let resposta = await EmpresaHttp.editar(
         this.selectIdEmpresa,
         this.novaOuEdicaoEmpresa
       );
+      
       this.empresa = resposta.data;
       this.buscarNomesDasEmpresas();
       
